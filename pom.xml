@@ -15,5 +15,6 @@
         <module>demo-redis</module>
         <module>demo-elasticsearch</module>
         <module>demo-minio</module>
+        <module>demo-maxcompute</module>
     </modules>
 </project>
