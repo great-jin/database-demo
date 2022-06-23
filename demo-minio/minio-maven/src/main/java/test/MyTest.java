@@ -1,4 +1,4 @@
-package minio.test;
+package test;
 
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;

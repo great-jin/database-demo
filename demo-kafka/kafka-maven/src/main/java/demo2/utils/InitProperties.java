@@ -1,4 +1,4 @@
-package com.kafka.demo2.utils;
+package demo2.utils;
 
 import java.util.Properties;
 

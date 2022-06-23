@@ -1,8 +1,8 @@
-package com.kafka.demo.utils;
+package demo.utils;
 
 import java.util.Map;
 
-import com.kafka.demo.bean.User;
+import demo.bean.User;
 import org.apache.kafka.common.serialization.Deserializer;
 
 /**

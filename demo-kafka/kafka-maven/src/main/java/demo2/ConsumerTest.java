@@ -1,7 +1,6 @@
-package com.kafka.demo2;
+package demo2;
 
-import com.kafka.demo.bean.User;
-import com.kafka.demo2.utils.InitProperties;
+import demo2.utils.InitProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

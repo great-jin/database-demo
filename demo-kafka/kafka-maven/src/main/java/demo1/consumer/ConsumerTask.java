@@ -1,4 +1,4 @@
-package com.kafka.demo1.consumer;
+package demo1.consumer;
 
 import kafka.consumer.KafkaStream;
 import kafka.consumer.ConsumerIterator;

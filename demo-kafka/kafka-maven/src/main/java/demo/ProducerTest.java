@@ -1,6 +1,6 @@
-package com.kafka.demo;
+package demo;
 
-import com.kafka.demo.bean.User;
+import demo.bean.User;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
@@ -15,7 +15,7 @@ public class ProducerTest {
         final String KEY_ENCODE =
                 "org.apache.kafka.common.serialization.StringSerializer";
         final String VALUE_ENCODE =
-                "com.kafka.demo.utils.EncodeKafka";
+                "demo.utils.EncodeKafka";
 
         Properties props = new Properties();
         // kafka 地址

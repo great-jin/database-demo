@@ -1,4 +1,4 @@
-package minio.sdks;
+package sdks;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;

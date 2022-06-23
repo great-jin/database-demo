@@ -1,4 +1,4 @@
-package minio.sdks;
+package sdks;
 
 import io.minio.*;
 import io.minio.errors.*;
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 

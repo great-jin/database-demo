@@ -1,6 +1,6 @@
-package com.kafka.demo.utils;
+package demo.utils;
 
-import com.kafka.demo.bean.User;
+import demo.bean.User;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,6 +1,6 @@
-package com.kafka.demo;
+package demo;
 
-import com.kafka.demo.bean.User;
+import demo.bean.User;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -17,7 +17,7 @@ class ConsumerTest {
         final String KEY_DECODE =
                 "org.apache.kafka.common.serialization.StringDeserializer";
         final String VALUE_DECODE =
-                "com.kafka.demo.utils.DecodeKafka";
+                "demo.utils.DecodeKafka";
 
         Properties props = new Properties();
         // kafka 地址
