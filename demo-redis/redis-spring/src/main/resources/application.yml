@@ -1,0 +1,39 @@
+server:
+  port: 9090
+  tomcat:
+    uri-encoding: utf-8
+
+
+spring:
+  # MySQL
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.231.6.65:3306/test_db?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 123456
+    druid:
+      initial-size: 5
+      max-active: 30
+      min-idle: 10
+      max-wait: 6000
+  # Redis
+  redis:
+    host: 10.231.6.65
+    port: 6379
+    password: 123456
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 100ms
+
+# MyBatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.ibudai.bean
+  # 控制台打印 sql 语句
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

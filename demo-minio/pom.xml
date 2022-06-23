@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>demo-minio</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- 导入minio 依赖 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.3.5</version>
+            <!--
+                minio 要求 okhttp 的版本 >= 4.8.1 ，但其自带的默认为 3.14.8
+                因为需要将原本的 okhttp 依赖排除，手动添加高于 4.8.1 的版本
+            -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- 重新导入 okhttp 依赖 -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.14</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.simplemagic</groupId>
+            <artifactId>simplemagic</artifactId>
+            <version>1.16</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+    </dependencies>
+
+</project>
