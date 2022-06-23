@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ElasticsearchConfiguration {
+public class ESConfig {
 
     @Value("${elasticsearch.host}")
     private String host;
