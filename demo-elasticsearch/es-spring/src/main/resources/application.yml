@@ -1,0 +1,9 @@
+server:
+  port: 9090
+
+elasticsearch:
+  host: 10.231.6.65
+  port: 9200
+  connTimeout: 3000
+  socketTimeout: 5000
+  connectionRequestTimeout: 500
