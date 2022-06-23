@@ -1,5 +1,3 @@
-package minio;
-
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;

@@ -1,4 +1,4 @@
-package com.kafka.demo1.producer;
+package demo1.producer;
 
 import kafka.producer.Partitioner;
 import kafka.utils.VerifiableProperties;

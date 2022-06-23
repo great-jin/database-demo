@@ -1,4 +1,4 @@
-package minio.sdks;
+package sdks;
 
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;

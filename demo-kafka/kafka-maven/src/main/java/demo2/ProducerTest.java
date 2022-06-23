@@ -1,6 +1,6 @@
-package com.kafka.demo2;
+package demo2;
 
-import com.kafka.demo2.utils.InitProperties;
+import demo2.utils.InitProperties;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
