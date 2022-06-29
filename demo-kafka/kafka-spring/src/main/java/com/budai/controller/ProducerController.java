@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-/**
- * 测试kafka生产者
- */
 @RestController
 @RequestMapping("/kafka")
 public class ProducerController {
