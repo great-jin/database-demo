@@ -1,4 +1,4 @@
-package com.ibudai.http.channel;
+package com.ibudai.controller.channel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +14,7 @@ public class SendTest {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @GetMapping("/put")
+    @GetMapping("/send")
     public void publish(@RequestParam String message) {
         // 发送消息
         redisTemplate.convertAndSend("myChannel", message);

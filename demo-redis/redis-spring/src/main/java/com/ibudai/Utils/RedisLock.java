@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.stereotype.Repository;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -78,8 +79,10 @@ public class RedisLock {
         RedisConnectionFactory factory = redisTemplate.getConnectionFactory();
         RedisConnection conn = factory.getConnection();
         try {
-            Boolean result = conn.set(name.getBytes(Charset.forName("UTF-8")), token.getBytes(Charset.forName("UTF-8")),
-                    Expiration.from(expire, TimeUnit.MILLISECONDS), RedisStringCommands.SetOption.SET_IF_ABSENT);
+            Boolean result = conn.set(name.getBytes(StandardCharsets.UTF_8),
+                    token.getBytes(StandardCharsets.UTF_8),
+                    Expiration.from(expire, TimeUnit.MILLISECONDS),
+                    RedisStringCommands.SetOption.SET_IF_ABSENT);
             if (result != null && result)
                 return token;
         } finally {
@@ -97,18 +100,18 @@ public class RedisLock {
      */
     public boolean unlock(String name, String token) {
         byte[][] keysAndArgs = new byte[2][];
-        keysAndArgs[0] = name.getBytes(Charset.forName("UTF-8"));
-        keysAndArgs[1] = token.getBytes(Charset.forName("UTF-8"));
+        keysAndArgs[0] = name.getBytes(StandardCharsets.UTF_8);
+        keysAndArgs[1] = token.getBytes(StandardCharsets.UTF_8);
         RedisConnectionFactory factory = redisTemplate.getConnectionFactory();
         RedisConnection conn = factory.getConnection();
         try {
-            Long result = (Long) conn.scriptingCommands().eval(unlockScript.getBytes(Charset.forName("UTF-8")), ReturnType.INTEGER, 1, keysAndArgs);
+            Long result = conn.scriptingCommands().eval(unlockScript.getBytes(StandardCharsets.UTF_8),
+                    ReturnType.INTEGER, 1, keysAndArgs);
             if (result != null && result > 0)
                 return true;
         } finally {
             RedisConnectionUtils.releaseConnection(conn, factory);
         }
-
         return false;
     }
 }

@@ -1,16 +1,16 @@
-package com.ibudai.http.channel;
+package com.ibudai.controller.channel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
-public class Listener1Test implements MessageListener {
+public class ListenerTest implements MessageListener {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(ListenerTest.class);
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        logger.info("订阅者-2号,接收到消息：" + new String(message.getBody()));
+        logger.info("订阅者-1号,接收到消息：" + new String(message.getBody()));
     }
 }
