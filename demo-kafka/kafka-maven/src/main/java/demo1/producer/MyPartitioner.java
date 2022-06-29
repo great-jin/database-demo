@@ -7,7 +7,6 @@ import kafka.utils.VerifiableProperties;
 public class MyPartitioner implements Partitioner {
 
     public MyPartitioner(VerifiableProperties props) {
-
     }
 
     public int partition(Object key, int a_numPartitions) {

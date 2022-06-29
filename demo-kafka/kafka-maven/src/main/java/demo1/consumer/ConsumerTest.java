@@ -1,4 +1,4 @@
-package com.kafka.task2.consumer;
+package demo1.consumer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import demo1.consumer.ConsumerTask;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.KafkaStream;
