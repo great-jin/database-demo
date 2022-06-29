@@ -1,0 +1,9 @@
+# ????
+server:
+  port: 9090
+
+# Minio???
+minio:
+  endpoint: http://10.231.6.65:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
