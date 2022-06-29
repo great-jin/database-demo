@@ -1,4 +1,4 @@
-package com.ibudai.Utils;
+package com.ibudai.utils;
 
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -9,18 +9,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.stereotype.Repository;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author 清风
- * @email 1737543007@qq.com
- * @date 19-3-5
- */
 @Repository
-public class RedisLock {
+public class RedisLockService {
 
     /**
      * 解锁脚本，原子操作
@@ -35,7 +29,7 @@ public class RedisLock {
 
     private StringRedisTemplate redisTemplate;
 
-    public RedisLock(StringRedisTemplate redisTemplate) {
+    public RedisLockService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -56,7 +50,8 @@ public class RedisLock {
                 if ((System.currentTimeMillis() - startTime) > (timeout - 50))
                     break;
                 try {
-                    Thread.sleep(50); //try 50 per sec
+                    // try 50 per sec
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return null;

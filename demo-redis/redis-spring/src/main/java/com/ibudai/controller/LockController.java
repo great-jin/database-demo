@@ -1,6 +1,6 @@
 package com.ibudai.controller;
 
-import com.ibudai.Utils.RedisLock;
+import com.ibudai.utils.RedisLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class LockController {
 
     @Autowired
-    RedisLock redisLock;
+    RedisLockService redisLockService;
 
     @GetMapping("/put")
     public void Demo() {
         String token = null;
         try {
-            token = redisLock.lock("lock_name", 10000, 11000);
+            token = redisLockService.lock("lock_name", 10000, 11000);
             if (token != null) {
                 System.out.print("我拿到了锁哦");
                 // 执行业务代码
@@ -26,7 +26,7 @@ public class LockController {
             }
         } finally {
             if (token != null) {
-                redisLock.unlock("lock_name", token);
+                redisLockService.unlock("lock_name", token);
             }
         }
     }

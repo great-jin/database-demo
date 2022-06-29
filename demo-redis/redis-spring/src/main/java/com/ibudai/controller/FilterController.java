@@ -1,8 +1,8 @@
 package com.ibudai.controller;
 
 import com.ibudai.bean.User;
-import com.ibudai.Utils.BloomFilterHelper;
-import com.ibudai.Utils.BloomFilterUtils;
+import com.ibudai.utils.BloomFilterHelper;
+import com.ibudai.utils.BloomFilterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
