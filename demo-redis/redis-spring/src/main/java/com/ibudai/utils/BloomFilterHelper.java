@@ -1,4 +1,4 @@
-package com.ibudai.Utils;
+package com.ibudai.utils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.hash.Funnel;
@@ -15,9 +15,9 @@ public class BloomFilterHelper<T> {
     public BloomFilterHelper(Funnel<T> funnel, int expectedInsertions, double fpp) {
         Preconditions.checkArgument(funnel != null, "funnel不能为空");
         this.funnel = funnel;
-        // 计算bit数组长度
+        // 计算 bit 数组长度
         bitSize = optimalNumOfBits(expectedInsertions, fpp);
-        // 计算hash方法执行次数
+        // 计算 hash 方法执行次数
         numHashFunctions = optimalNumOfHashFunctions(expectedInsertions, bitSize);
     }
 

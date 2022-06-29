@@ -1,6 +1,6 @@
 package com.ibudai.controller;
 
-import com.ibudai.Utils.RedisUtils;
+import com.ibudai.utils.RedisUtils;
 import com.ibudai.bean.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;

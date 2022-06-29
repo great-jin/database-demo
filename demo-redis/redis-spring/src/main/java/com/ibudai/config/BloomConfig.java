@@ -2,7 +2,7 @@ package com.ibudai.config;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Funnel;
-import com.ibudai.Utils.BloomFilterHelper;
+import com.ibudai.utils.BloomFilterHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

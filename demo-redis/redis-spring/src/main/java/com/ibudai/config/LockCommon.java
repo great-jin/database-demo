@@ -6,10 +6,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description //直接使用Redis进行分布式锁
- * 这是简易版本  如果要使用Redis原生锁记得加过期时间，防止死锁 最好使用Redisson操作简单更加方便
- * @Date $ $
- * @Author huangwb
+ * @Description
+ * 简易版本  Redis 分布式锁
+ * 如果要使用 Redis 原生锁记得加过期时间防止死锁，最好使用 Redisson 操作更方便
  **/
 
 @Component
