@@ -1,4 +1,4 @@
-package com.ibudai.http;
+package com.ibudai.controller;
 
 import com.ibudai.bean.User;
 import com.ibudai.Utils.BloomFilterHelper;

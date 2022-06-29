@@ -1,8 +1,7 @@
-package com.ibudai.http;
+package com.ibudai.controller;
 
 import com.ibudai.bean.User;
 import com.ibudai.service.UserService;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

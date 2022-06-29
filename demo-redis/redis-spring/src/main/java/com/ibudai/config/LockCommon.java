@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
  **/
 
 @Component
-public class RedisLockCommon {
+public class LockCommon {
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -25,18 +26,19 @@ public class RedisLockCommon {
      * @return
      */
     public Boolean tryLock(String key, String value) {
+        Boolean flag = false;
         if (stringRedisTemplate.opsForValue().setIfAbsent(key, value)) {
-            return true;
+            flag = true;
         }
         String currentValue = stringRedisTemplate.opsForValue().get(key);
         if (Strings.isNullOrEmpty(currentValue) && Long.valueOf(currentValue) < System.currentTimeMillis()) {
-            //获取上一个锁的时间 如果高并发的情况可能会出现已经被修改的问题  所以多一次判断保证线程的安全
+            // 获取上一个锁的时间 如果高并发的情况可能会出现已经被修改的问题  所以多一次判断保证线程的安全
             String oldValue = stringRedisTemplate.opsForValue().getAndSet(key, value);
             if (Strings.isNullOrEmpty(oldValue) && oldValue.equals(currentValue)) {
-                return true;
+                flag = true;
             }
         }
-        return false;
+        return flag;
     }
 
     /**
@@ -52,6 +54,7 @@ public class RedisLockCommon {
                 stringRedisTemplate.opsForValue().getOperations().delete(key);
             }
         } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
