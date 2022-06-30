@@ -26,6 +26,9 @@ public class ESConfig {
     @Value("${elasticsearch.connectionRequestTimeout}")
     private int connectionRequestTimeout;
 
+    /**
+     * 配置 RestHighLevelClient 依赖到 spring 容器中待用
+     */
     @Bean(destroyMethod = "close", name = "client")
     public RestHighLevelClient initRestClient() {
         RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
