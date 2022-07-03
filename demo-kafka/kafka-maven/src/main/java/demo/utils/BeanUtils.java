@@ -51,5 +51,4 @@ public class BeanUtils {
         }
         return (T) readObject;
     }
-
 }
