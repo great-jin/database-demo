@@ -1,4 +1,4 @@
-# ????
+# 端口设置
 server:
   port: 9090
   tomcat:
@@ -8,32 +8,33 @@ spring:
   kafka:
     bootstrap-servers: 47.100.200.104:9092
     topic: test-topic
-    # ?????
+    # 生产者
     producer:
-      # ack??????? 1 ??????? leader ????
+      # producer 等待 leader 将数据写入本地log
       acks: 1
-      # ??????? Integer. MAX_VALUE
+      # 发送失败重试次数
       retries: 3
-      # ???????????16K?
+      # 批处理消息记录，以减少请求次数
       batch-size: 16384
-      # ??????????(32M)
+      # 用于缓存数据的内存大小
       buffer-memory: 33554432
-      # key ? value??????????????
+      # key 与 value 编码方式
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    # ?????
+    # 消费者
     consumer:
       group-id: comsumer
       enable-auto-commit: false
-      # earliest???????   latest?????????   ??latest
+      # earliest：当各分区下有已提交的 offset 时，从提交的 offset 开始消费；无提交的 offset 时，从头开始消费
+      # latest：当各分区下有已提交的 offset 时，从提交的 offset 开始消费；无提交的 offset 时，消费新产生的该分区下的数据
+      # none：各分区都存在已提交的 offset 时，从 offset 后开始消费；只要有一个分区不存在已提交的 offset，则抛出异常
       auto-offset-reset: latest
-      # key?value??????????????
+      # key 与 value 解码方式
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    # ?????
+    # 监听器
     listener:
-      # ???????
+      # 并发数
       concurrency: 6
-      # ??????????????ackMode
       ack-mode: MANUAL
 

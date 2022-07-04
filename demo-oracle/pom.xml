@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demo-elasticsearch</artifactId>
+    <artifactId>demo-oracle</artifactId>
     <packaging>pom</packaging>
-
     <modules>
-        <module>es-spring</module>
+        <module>oracle-maven</module>
     </modules>
+
 </project>
