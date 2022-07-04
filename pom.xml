@@ -16,5 +16,7 @@
         <module>demo-elasticsearch</module>
         <module>demo-minio</module>
         <module>demo-maxcompute</module>
+        <module>demo-mysql</module>
+        <module>demo-oracle</module>
     </modules>
 </project>
