@@ -1,8 +1,10 @@
 package xyz.ibudai;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@MapperScan("xyz.ibudai.dao")
 @SpringBootApplication
 public class MysqlSpringApplication {
 
