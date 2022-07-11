@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/filter")
-public class FilterController {
+@RequestMapping("/bloom")
+public class BloomController {
 
     @Autowired
-    BloomFilterUtils bloomFilterUtils;
+    private BloomFilterUtils bloomFilterUtils;
 
     @Autowired
     private BloomFilterHelper bloomFilterHelper;
@@ -19,7 +19,7 @@ public class FilterController {
     @PostMapping("/add")
     public String addUser(@RequestBody User user) {
         try {
-            bloomFilterUtils.add(bloomFilterHelper, String.valueOf(user.getId()), user);
+            bloomFilterUtils.add(bloomFilterHelper, String.valueOf(user.getId()), user.getName());
         } catch (Exception e) {
             throw new RuntimeException("添加失败");
         }

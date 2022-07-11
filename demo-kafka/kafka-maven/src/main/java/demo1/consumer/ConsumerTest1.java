@@ -38,7 +38,7 @@ public class ConsumerTest1 extends Thread {
     private static ConsumerConfig createConsumer() {
         Properties props = new Properties();
         // 配置要连接的zookeeper地址与端口
-        props.put("zookeeper.connect", "localhost:2181");
+        props.put("zookeeper.connect", "10.231.6.65:2181");
         // 配置zookeeper的组id
         props.put("group.id", "consumers");
         // 配置zookeeper连接超时间隔

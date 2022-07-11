@@ -22,7 +22,7 @@ public class ConsumerTest {
 
     public static void main(String[] arg) {
         ConsumerTest task = new ConsumerTest(
-                "localhost:2181",
+                "10.231.6.65:2181",
                 "consumer",
                 "topic-123");
 

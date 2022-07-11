@@ -11,6 +11,7 @@
 
     <artifactId>demo-mysql</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>mysql-maven</module>
     </modules>

@@ -27,6 +27,9 @@ public class JDBCTest {
         }
     }
 
+    /**
+     * Oracle JDBC语句不允许带分号(;)，否则将会报非法字符
+     */
     @Test
     public void OracleDemo() {
         final String SQL = "select * from TEST_0628";
