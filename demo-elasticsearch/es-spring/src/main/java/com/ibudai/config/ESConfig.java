@@ -69,11 +69,6 @@ public class ESConfig {
                 new UsernamePasswordCredentials(userName, password));
         // 构建连接对象
         RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
-                // 配置登录认证
-                .setHttpClientConfigCallback(httpClientBuilder -> {
-                    httpClientBuilder.disableAuthCaching();
-                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                })
                 // 配置连接超时
                 .setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
                         .setConnectTimeout(connTimeout)
@@ -81,8 +76,10 @@ public class ESConfig {
                         .setConnectionRequestTimeout(connectionRequestTimeout))
                 // 异步连接数配置
                 .setHttpClientConfigCallback(httpClientBuilder -> {
+                    httpClientBuilder.disableAuthCaching();
                     httpClientBuilder.setMaxConnTotal(maxConnectNum);
                     httpClientBuilder.setMaxConnPerRoute(maxConnectPerRoute);
+                    // 用户认证
                     return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                 });
         return new RestHighLevelClient(builder);
