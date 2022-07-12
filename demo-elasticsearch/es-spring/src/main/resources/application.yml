@@ -2,8 +2,15 @@ server:
   port: 9090
 
 elasticsearch:
+  # 连接信息
   host: 10.231.6.65
   port: 9200
+  username: elastic
+  password: 123456
+  # 超时配置
   connTimeout: 3000
   socketTimeout: 5000
   connectionRequestTimeout: 500
+  # 异步连接数配置
+  maxConnectNum: 100
+  maxConnectPerRoute: 100

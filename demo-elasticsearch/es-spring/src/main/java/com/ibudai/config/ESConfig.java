@@ -1,6 +1,11 @@
 package com.ibudai.config;
 
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -17,25 +22,69 @@ public class ESConfig {
     @Value("${elasticsearch.port}")
     private int port;
 
+    @Value("${elasticsearch.username}")
+    private String userName;
+
+    @Value("${elasticsearch.password}")
+    private String password;
+
+    /**
+     * 连接超时时间
+     */
     @Value("${elasticsearch.connTimeout}")
     private int connTimeout;
 
+    /**
+     * Socket 连接超时时间
+     */
     @Value("${elasticsearch.socketTimeout}")
     private int socketTimeout;
 
+    /**
+     * 获取连接的超时时间
+     */
     @Value("${elasticsearch.connectionRequestTimeout}")
     private int connectionRequestTimeout;
 
     /**
+     * 最大连接数
+     */
+    @Value("${elasticsearch.maxConnectNum}")
+    private int maxConnectNum;
+
+    /**
+     * 最大路由连接数
+     */
+    @Value("${elasticsearch.maxConnectPerRoute}")
+    private int maxConnectPerRoute;
+
+    /**
      * 配置 RestHighLevelClient 依赖到 spring 容器中待用
      */
-    @Bean(destroyMethod = "close", name = "client")
+    @Bean(name = "client", destroyMethod = "close")
     public RestHighLevelClient initRestClient() {
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        // 用户信息
+        credentialsProvider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials(userName, password));
+        // 构建连接对象
         RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
+                // 配置登录认证
+                .setHttpClientConfigCallback(httpClientBuilder -> {
+                    httpClientBuilder.disableAuthCaching();
+                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                })
+                // 配置连接超时
                 .setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
                         .setConnectTimeout(connTimeout)
                         .setSocketTimeout(socketTimeout)
-                        .setConnectionRequestTimeout(connectionRequestTimeout));
+                        .setConnectionRequestTimeout(connectionRequestTimeout))
+                // 异步连接数配置
+                .setHttpClientConfigCallback(httpClientBuilder -> {
+                    httpClientBuilder.setMaxConnTotal(maxConnectNum);
+                    httpClientBuilder.setMaxConnPerRoute(maxConnectPerRoute);
+                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                });
         return new RestHighLevelClient(builder);
     }
 }
