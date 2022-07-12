@@ -70,10 +70,10 @@ public class ESConfig {
         // 构建连接对象
         RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
                 // 配置连接超时
-                .setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
-                        .setConnectTimeout(connTimeout)
-                        .setSocketTimeout(socketTimeout)
-                        .setConnectionRequestTimeout(connectionRequestTimeout))
+                .setRequestConfigCallback(requestConfigBuilder ->
+                        requestConfigBuilder.setConnectTimeout(connTimeout)
+                                .setSocketTimeout(socketTimeout)
+                                .setConnectionRequestTimeout(connectionRequestTimeout))
                 // 异步连接数配置
                 .setHttpClientConfigCallback(httpClientBuilder -> {
                     httpClientBuilder.disableAuthCaching();
