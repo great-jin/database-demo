@@ -14,5 +14,6 @@
 
     <modules>
         <module>minio-maven</module>
+        <module>minio-spring</module>
     </modules>
 </project>
