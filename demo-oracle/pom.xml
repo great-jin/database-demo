@@ -11,8 +11,9 @@
 
     <artifactId>demo-oracle</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>oracle-maven</module>
+        <module>oracle-spring</module>
     </modules>
-
 </project>

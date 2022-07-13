@@ -1,4 +1,4 @@
-package com.budai.controller;
+package xyz.ibudai.controller;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;

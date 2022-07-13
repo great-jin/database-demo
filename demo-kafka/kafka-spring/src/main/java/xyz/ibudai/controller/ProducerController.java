@@ -1,5 +1,6 @@
-package com.budai.controller;
+package xyz.ibudai.controller;
 
+import xyz.ibudai.model.User;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +14,14 @@ import java.util.UUID;
 public class ProducerController {
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, User> kafkaTemplate;
 
     @GetMapping("/send")
     public void send() {
         String msg = "hello world";
+        User user = new User("alex", "1234");
         String key = UUID.randomUUID().toString();
-        kafkaTemplate.send("test_topic", key, msg);
+        kafkaTemplate.send("test_topic", key, user);
     }
 }
 
