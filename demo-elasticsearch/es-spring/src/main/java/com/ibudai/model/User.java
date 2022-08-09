@@ -1,12 +1,26 @@
 package com.ibudai.model;
 
+import java.util.Date;
+
 public class User {
 
     private String id;
 
     private String name;
 
-    private String city;
+    private String message;
+
+    private Date createTime;
+
+    public User() {
+    }
+
+    public User(String id, String name, String message, Date createTime) {
+        this.id = id;
+        this.name = name;
+        this.message = message;
+        this.createTime = createTime;
+    }
 
     public String getId() {
         return id;
@@ -24,20 +38,19 @@ public class User {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
+    public String getMessage() {
+        return message;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public User() {
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public User(String id, String name, String city) {
-        this.id = id;
-        this.name = name;
-        this.city = city;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

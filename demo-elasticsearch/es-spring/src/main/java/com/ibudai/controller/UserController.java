@@ -1,31 +1,38 @@
 package com.ibudai.controller;
 
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.CreateIndexResponse;
-
+import com.ibudai.model.User;
+import com.ibudai.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("es")
+@RequestMapping("es/user")
 public class UserController {
 
     @Autowired
-    @Qualifier("client")
-    public RestHighLevelClient client;
+    private UserService userService;
 
-    @GetMapping("create")
-    public boolean CreateIndex(String index) throws IOException {
-        CreateIndexRequest request = new CreateIndexRequest(index);
-        CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
-        client.close();
-        return response.isAcknowledged();
+    @GetMapping("getById")
+    public User getById(@RequestParam("indexName") String indexName,
+                        @RequestParam("id") String id) {
+        return userService.getById(indexName, id);
+    }
+
+    @PostMapping("add")
+    public boolean insert(@RequestParam("indexName") String indexName,
+                          @RequestBody User user) {
+        return userService.insert(indexName, user);
+    }
+
+    @PostMapping("edit")
+    public boolean update(@RequestParam("indexName") String indexName,
+                          @RequestBody User user) {
+        return userService.update(indexName, user);
+    }
+
+    @GetMapping("delete")
+    public boolean delete(@RequestParam("indexName") String indexName,
+                          @RequestParam("id") String id) {
+        return userService.delete(indexName, id);
     }
 }
