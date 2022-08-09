@@ -61,7 +61,7 @@ public class ESConfig {
     /**
      * 配置 RestHighLevelClient 依赖到 spring 容器中待用
      */
-    @Bean(name = "client", destroyMethod = "close")
+    @Bean(name = "restHighLevelClient", destroyMethod = "close")
     public RestHighLevelClient initRestClient() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         // 用户信息
