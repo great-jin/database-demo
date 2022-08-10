@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User getById(String indexName, String id);
+    User getById(String indexName, String docId);
 
     List<User> queryAll(String indexName);
 
@@ -14,9 +14,13 @@ public interface UserService {
 
     List<User> multipleQuery(String indexName, User user);
 
+    List<User> filterQuery(String indexName, int min, int max);
+
+    List<User> vagueQuery(String indexName, String name);
+
     String insert(String index, User user);
 
     String update(String index, User user);
 
-    String delete(String index, String id);
+    String delete(String index, String docId);
 }
