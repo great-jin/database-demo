@@ -1,15 +1,24 @@
 package com.ibudai.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
+    @JsonProperty("id")
     private String id;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("message")
     private String message;
 
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createTime;
 
     public User() {

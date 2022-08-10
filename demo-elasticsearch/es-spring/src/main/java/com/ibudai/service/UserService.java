@@ -2,13 +2,21 @@ package com.ibudai.service;
 
 import com.ibudai.model.User;
 
+import java.util.List;
+
 public interface UserService {
 
     User getById(String indexName, String id);
 
-    boolean insert(String index, User user);
+    List<User> queryAll(String indexName);
 
-    boolean update(String index, User user);
+    List<User> singleQuery(String indexName, User user);
 
-    boolean delete(String index, String id);
+    List<User> multipleQuery(String indexName, User user);
+
+    String insert(String index, User user);
+
+    String update(String index, User user);
+
+    String delete(String index, String id);
 }
