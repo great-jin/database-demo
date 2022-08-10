@@ -1,5 +1,7 @@
 package com.ibudai.service.Impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +19,8 @@ import java.io.IOException;
 @Service("indexService")
 public class IndexServiceImpl implements IndexService {
 
+    final private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     public RestHighLevelClient restHighLevelClient;
 
@@ -33,6 +37,7 @@ public class IndexServiceImpl implements IndexService {
         try {
             isExists = restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
         } catch (IOException e) {
+            logger.error("判断索引存在异常" + e);
             throw new RuntimeException(e);
         }
         return isExists;
@@ -52,6 +57,7 @@ public class IndexServiceImpl implements IndexService {
             response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
             restHighLevelClient.close();
         } catch (IOException e) {
+            logger.error("索引创建异常" + e);
             throw new RuntimeException(e);
         }
         return response.isAcknowledged();
@@ -66,11 +72,12 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public boolean deleteIndex(String indexName) {
         DeleteIndexRequest request = new DeleteIndexRequest(indexName);
-        AcknowledgedResponse response = null;
+        AcknowledgedResponse response;
         try {
             response = restHighLevelClient.indices().delete(request, RequestOptions.DEFAULT);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("索引删除异常" + e);
+            throw new RuntimeException(e);
         }
         return response.isAcknowledged();
     }
