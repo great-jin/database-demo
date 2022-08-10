@@ -1,5 +1,6 @@
 package com.ibudai.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibudai.model.User;
 import com.ibudai.service.UserService;
@@ -17,6 +18,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -30,7 +32,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -74,13 +79,20 @@ public class UserServiceImpl implements UserService {
         // 构造查询条件
         SearchSourceBuilder builder = new SearchSourceBuilder();
         builder.query(QueryBuilders.matchAllQuery());
+        builder.timeout(new TimeValue(5, TimeUnit.MINUTES));
+        // 不加这个在数据量超过 10000 时总数会有问题
+        builder.trackTotalHits(true);
         request.source(builder);
-        List<User> userList = new ArrayList<>();
+        List<User> userList;
         try {
             SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-            for (SearchHit hit : response.getHits().getHits()) {
-                userList.add(objectMapper.readValue(hit.getSourceAsString(), User.class));
-            }
+            userList = Arrays.stream(response.getHits().getHits()).map(p -> {
+                try {
+                    return objectMapper.readValue(p.getSourceAsString(), User.class);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
