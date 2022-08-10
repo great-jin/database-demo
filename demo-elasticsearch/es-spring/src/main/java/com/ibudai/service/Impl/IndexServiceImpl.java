@@ -1,5 +1,6 @@
 package com.ibudai.service.Impl;
 
+import org.elasticsearch.common.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,12 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public boolean createIndex(String indexName) {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
+        // 配置索引分片、副本
+        Settings.Builder builder = Settings.builder()
+                .put("index.number_of_shards", 3)
+                .put("index.number_of_replicas", 5)
+                .put("index.max_result_window", 2147483647);
+        request.settings(builder);
         CreateIndexResponse response;
         try {
             response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
