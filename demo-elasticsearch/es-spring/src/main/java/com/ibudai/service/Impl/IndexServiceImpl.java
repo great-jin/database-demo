@@ -1,6 +1,7 @@
 package com.ibudai.service.Impl;
 
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,26 @@ import java.io.IOException;
 @Service("indexService")
 public class IndexServiceImpl implements IndexService {
 
-    final private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public RestHighLevelClient restHighLevelClient;
+
+    public String mapping() {
+        return "{\n" +
+                "  \"properties\": {\n" +
+                "      \"id\": {\n" +
+                "          \"type\": \"keyword\"\n" +
+                "      },\n" +
+                "      \"info\": {\n" +
+                "          \"type\": \"text\"\n" +
+                "      },\n" +
+                "      \"createDate\": {\n" +
+                "          \"type\": \"keyword\"\n" +
+                "      }\n" +
+                "   }" +
+                "}";
+    }
 
     /**
      * 索引是否存在
@@ -59,10 +76,11 @@ public class IndexServiceImpl implements IndexService {
                 .put("index.number_of_replicas", 5)
                 .put("index.max_result_window", 2147483647);
         request.settings(builder);
+        // 配置 mapping
+        request.mapping(mapping(), XContentType.JSON);
         CreateIndexResponse response;
         try {
             response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
-            restHighLevelClient.close();
         } catch (IOException e) {
             logger.error("索引创建异常" + e);
             throw new RuntimeException(e);
