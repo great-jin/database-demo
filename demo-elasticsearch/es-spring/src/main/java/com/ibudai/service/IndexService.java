@@ -2,6 +2,8 @@ package com.ibudai.service;
 
 public interface IndexService {
 
+    String mapping();
+
     /**
      * 索引是否存在
      *
