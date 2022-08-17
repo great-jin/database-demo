@@ -1,14 +1,12 @@
 package com.ibudai.service;
 
 import com.ibudai.model.User;
+import com.ibudai.repository.AbstractRepository;
+import com.ibudai.repository.Repository;
 
 import java.util.List;
 
-public interface UserService {
-
-    User getById(String indexName, String docId);
-
-    List<User> queryAll(String indexName);
+public interface UserService extends Repository<User> {
 
     List<User> singleQuery(String indexName, User user);
 
@@ -17,10 +15,4 @@ public interface UserService {
     List<User> filterQuery(String indexName, int min, int max);
 
     List<User> vagueQuery(String indexName, String name);
-
-    String insert(String index, User user);
-
-    String update(String index, User user);
-
-    String delete(String index, String docId);
 }

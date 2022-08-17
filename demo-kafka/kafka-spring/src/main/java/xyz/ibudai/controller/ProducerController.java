@@ -1,11 +1,9 @@
 package xyz.ibudai.controller;
 
-import xyz.ibudai.model.User;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.web.bind.annotation.*;
+import xyz.ibudai.model.User;
 
 import java.util.UUID;
 
@@ -17,11 +15,9 @@ public class ProducerController {
     private KafkaTemplate<String, User> kafkaTemplate;
 
     @GetMapping("/send")
-    public void send() {
-        String msg = "hello world";
-        User user = new User("alex", "1234");
+    public void send(@RequestParam("topic") String topic, @RequestBody User user) {
         String key = UUID.randomUUID().toString();
-        kafkaTemplate.send("test_topic", key, user);
+        kafkaTemplate.send(topic, key, user);
     }
 }
 
