@@ -3,6 +3,7 @@ package com.ibudai.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibudai.model.User;
+import com.ibudai.repository.AbstractRepository;
 import com.ibudai.service.UserService;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -40,64 +41,13 @@ import java.util.stream.Collectors;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Service("userService")
-public class UserServiceImpl implements UserService {
-
-    final private Logger logger = LoggerFactory.getLogger(getClass());
+public class UserServiceImpl extends AbstractRepository<User> implements UserService {
 
     @Autowired
     public ObjectMapper objectMapper;
 
     @Autowired
     public RestHighLevelClient restHighLevelClient;
-
-    @Override
-    public User getById(String indexName, String docId) {
-        GetRequest request = new GetRequest();
-        request.index(indexName);
-        request.id(docId);
-        User user;
-        GetResponse response;
-        try {
-            response = restHighLevelClient.get(request, RequestOptions.DEFAULT);
-            user = objectMapper.readValue(response.getSourceAsString(), User.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return user;
-    }
-
-    /**
-     * 查询所有数据
-     *
-     * @param indexName
-     * @return
-     */
-    @Override
-    public List<User> queryAll(String indexName) {
-        SearchRequest request = new SearchRequest();
-        request.indices(indexName);
-        // 构造查询条件
-        SearchSourceBuilder builder = new SearchSourceBuilder();
-        builder.query(QueryBuilders.matchAllQuery());
-        builder.timeout(new TimeValue(5, TimeUnit.MINUTES));
-        // 不加这个在数据量超过 10000 时总数会有问题
-        builder.trackTotalHits(true);
-        request.source(builder);
-        List<User> userList;
-        try {
-            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-            userList = Arrays.stream(response.getHits().getHits()).map(p -> {
-                try {
-                    return objectMapper.readValue(p.getSourceAsString(), User.class);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return userList;
-    }
 
     /**
      * 单条件精准查询
@@ -221,60 +171,5 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         }
         return userList;
-    }
-
-    /**
-     * getResult(): CREATED、UPDATED、DELETED、NOT_FOUND、NOOP
-     *
-     * @param indexName
-     * @param user
-     * @return
-     */
-    @Override
-    public String insert(String indexName, User user) {
-        IndexRequest request = new IndexRequest();
-        IndexResponse response;
-        // 设置文档 id, 等价主键
-        request.index(indexName);
-        request.id(user.getId());
-        try {
-            request.source(objectMapper.writeValueAsString(user), XContentType.JSON);
-            response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            logger.error("数据新增异常" + e);
-            throw new RuntimeException(e);
-        }
-        return response.getResult().getLowercase();
-    }
-
-    @Override
-    public String update(String indexName, User user) {
-        UpdateRequest request = new UpdateRequest();
-        request.index(indexName);
-        request.id(user.getId());
-        UpdateResponse response;
-        try {
-            request.doc(objectMapper.writeValueAsString(user), XContentType.JSON);
-            response = restHighLevelClient.update(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            logger.error("数据更新异常" + e);
-            throw new RuntimeException(e);
-        }
-        return response.getResult().getLowercase();
-    }
-
-    @Override
-    public String delete(String indexName, String docId) {
-        DeleteRequest request = new DeleteRequest();
-        request.index(indexName);
-        request.id(docId);
-        DeleteResponse response;
-        try {
-            response = restHighLevelClient.delete(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            logger.error("数据删除异常" + e);
-            throw new RuntimeException(e);
-        }
-        return response.getResult().getLowercase();
     }
 }

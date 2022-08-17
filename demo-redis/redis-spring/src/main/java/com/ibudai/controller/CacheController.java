@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cache")
-public class UserController {
+public class CacheController {
 
     @Autowired
     UserService userService;

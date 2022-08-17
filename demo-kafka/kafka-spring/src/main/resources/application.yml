@@ -7,7 +7,6 @@ server:
 spring:
   kafka:
     bootstrap-servers: 10.231.6.65:9092
-    topic: test-topic
     # 生产者
     producer:
       # producer 等待 leader 将数据写入本地log

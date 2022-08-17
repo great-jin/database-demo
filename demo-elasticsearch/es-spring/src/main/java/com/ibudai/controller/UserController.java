@@ -16,12 +16,12 @@ public class UserController {
 
     @GetMapping("getById")
     public User getById(@RequestParam("indexName") String indexName, @RequestParam("id") String id) {
-        return userService.getById(indexName, id);
+        return userService.get(indexName, id);
     }
 
     @GetMapping("list")
     public List<User> queryAll(@RequestParam("indexName") String indexName) {
-        return userService.queryAll(indexName);
+        return userService.list(indexName);
     }
 
     @PostMapping("single")
@@ -37,18 +37,18 @@ public class UserController {
     @PostMapping("add")
     public String insert(@RequestParam("indexName") String indexName,
                          @RequestBody User user) {
-        return userService.insert(indexName, user);
+        return userService.save(indexName, user.getId(), user);
     }
 
     @PostMapping("edit")
     public String update(@RequestParam("indexName") String indexName,
                          @RequestBody User user) {
-        return userService.update(indexName, user);
+        return userService.update(indexName, user.getId(), user);
     }
 
     @GetMapping("delete")
     public String delete(@RequestParam("indexName") String indexName,
                          @RequestParam("id") String id) {
-        return userService.delete(indexName, id);
+        return userService.deleted(indexName, id);
     }
 }
