@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class AbstractRepository<T> implements Repository<T> {
+public abstract class AbstractRepository<T> implements Repository<T> {
 
     private Class<T> tClass;
 
