@@ -30,6 +30,11 @@ class ConsumerTest {
         props.put("session.timeout.ms", "30000");
         // consumer 向 zookeeper 提交 offset 的频率，单位是秒
         props.put("auto.commit.interval.ms", "1000");
+        // zookeeper 中没有初始化的 offset 时，如果 offset 是以下值的回应
+        // lastest: 自动复位 offset 为 lastest 的 offset
+        // earliest: 自动复位 offset 为 earliest 的 offset
+        // none: 向 consumer 抛出异常
+        props.put("auto.offset.reset", "earliest");
         // Key 解码方式
         props.put("key.deserializer", KEY_DECODE);
         // value 解码方式
