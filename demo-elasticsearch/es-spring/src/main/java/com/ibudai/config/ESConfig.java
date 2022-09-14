@@ -63,8 +63,8 @@ public class ESConfig {
      */
     @Bean(name = "restHighLevelClient", destroyMethod = "close")
     public RestHighLevelClient initRestClient() {
+        // 创建连接用户信息
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        // 用户信息
         credentialsProvider.setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(userName, password));
         // 构建连接对象

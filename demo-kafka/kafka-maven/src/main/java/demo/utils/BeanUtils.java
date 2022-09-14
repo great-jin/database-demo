@@ -23,16 +23,16 @@ public class BeanUtils {
      * @return
      */
     public static byte[] objectToByte(Object obj) {
-        byte[] _byte = null;
+        byte[] bytes = null;
         try (ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
              ObjectOutputStream outputStream = new ObjectOutputStream(byteArray)) {
             outputStream.writeObject(obj);
             outputStream.flush();
-            _byte = byteArray.toByteArray();
+            bytes = byteArray.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return _byte;
+        return bytes;
     }
 
     /**

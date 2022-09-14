@@ -13,6 +13,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>maxcompute-maven</module>
+        <module>mc-maven</module>
     </modules>
 </project>
