@@ -16,21 +16,18 @@ public class ProducerTest {
 
     @SuppressWarnings("deprecation")
     public static void main(String[] args) {
-        // 设置配置属性
         Properties props = new Properties();
-        // 配置kafka的IP和端口
+        // 配置 kafka 的 IP 和端口
         props.put("metadata.broker.list",
                 "192.168.173.42:9092,192.168.173.43:9092,192.168.173.44:9092");
+        // key.serializer.class 默认为 serializer.class
         props.put("serializer.class", "kafka.serializer.StringEncoder");
-        // key.serializer.class默认为serializer.class
         props.put("key.serializer.class", "kafka.serializer.StringEncoder");
-        // 可选配置，如果不配置，则使用默认的partitioner
+        // 可选配置，如果不配置，则使用默认的 Partitioner
         props.put("partitioner.class", "demo2.producer.PartitionerDemo");
-        // 触发acknowledgement机制，否则是fire and forget，可能会引起数据丢失
-        // 值为0,1,-1,可以参考
+        // acknowledgement机制，否则是 fire and forget，可能会引起数据丢失, 值为 0, 1, -1
         props.put("request.required.acks", "1");
         ProducerConfig config = new ProducerConfig(props);
-
         // 创建 producer
         Producer<String, String> producer = new Producer<>(config);
 
@@ -41,7 +38,7 @@ public class ProducerTest {
 
         // 如果 topic 不存在，则会自动创建，
         // 默认 replication-factor 为 1，partitions为0
-        KeyedMessage<String, String> data = new KeyedMessage<String, String>(topic, key, msg);
+        KeyedMessage<String, String> data = new KeyedMessage<>(topic, key, msg);
         System.out.println("-----Kafka Producer----createMessage----\n" + data);
         producer.send(data);
 

@@ -59,9 +59,8 @@ public class DBInfoTest {
                     tableVo.put("TableSchema", tableSchema);
                     tableVo.put("TableName", rs.getString("TABLE_NAME"));
                     tableVo.put("TableType", rs.getString("TABLE_TYPE"));
-
-//                    tableVo.put("TableCatalog", rs.getString("TABLE_CAT"));
-//                    tableVo.put("Remarks", rs.getString("REMARKS"));
+                    //                    tableVo.put("TableCatalog", rs.getString("TABLE_CAT"));
+                    //                    tableVo.put("Remarks", rs.getString("REMARKS"));
                     tableDTO.add(tableVo);
                 }
             } catch (Exception e) {
