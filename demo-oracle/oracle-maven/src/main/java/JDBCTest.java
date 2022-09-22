@@ -15,7 +15,7 @@ public class JDBCTest {
 
     final String CLASSNAME = "oracle.jdbc.OracleDriver";
     final String JDBC = "jdbc:oracle:thin:@10.231.6.65:1521:helowin";
-    final String USERNAME = "root";
+    final String USERNAME = "budai";
     final String PASSWORD = "123456";
 
     @Before
@@ -24,6 +24,17 @@ public class JDBCTest {
             Class.forName(CLASSNAME);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void demo() {
+        try (Connection con = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+            // 连接是否有效, 指定时间内连接失败返回 false
+            boolean isValid = con.isValid(30);
+            System.out.println(isValid);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

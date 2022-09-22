@@ -6,10 +6,10 @@ import org.junit.Test;
 import java.sql.*;
 import java.util.*;
 
-public class DBInfoTest {
+public class InfoTest {
     final String CLASSNAME = "oracle.jdbc.OracleDriver";
     final String JDBC = "jdbc:oracle:thin:@10.231.6.65:1521:helowin";
-    final String USERNAME = "TEST_USER";
+    final String USERNAME = "budai";
     final String PASSWORD = "123456";
 
     @Before
@@ -21,28 +21,9 @@ public class DBInfoTest {
         }
     }
 
-    @Test
-    public void SQLDemo() {
-        final String SQL = "select * from TEST_0628";
-        try (Connection con = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
-            Map<String, Object> map = new LinkedHashMap<>();
-            List<Map<String, Object>> list = new ArrayList<>();
-
-            Statement stmt = con.createStatement();
-            stmt.executeQuery(SQL);
-            ResultSet result = stmt.getResultSet();
-            while (result.next()) {
-                for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
-                    map.put(result.getMetaData().getColumnName(i), result.getString(i));
-                }
-                list.add(new JSONObject(map));
-            }
-            System.out.println(list);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
+    /**
+     * 获取所有表名
+     */
     @Test
     public void TableDemo() {
         List<Map<String, String>> tableDTO = new ArrayList<>();
@@ -115,8 +96,9 @@ public class DBInfoTest {
                 }
             } catch (Exception e) {
                 schema.clear();
-                PreparedStatement statement = connection.prepareStatement("select username as table_schem from " +
-                        "all_users order by table_schem");
+                PreparedStatement statement = connection.prepareStatement(
+                        "select username as table_schem from " +
+                                "all_users order by table_schem");
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
                     schema.add(rs.getString(1));
@@ -128,6 +110,9 @@ public class DBInfoTest {
         System.out.println(schema);
     }
 
+    /**
+     * 获取所有 Schema
+     */
     @Test
     public void Schema1Demo() {
         List<String> schema = new ArrayList<>();
