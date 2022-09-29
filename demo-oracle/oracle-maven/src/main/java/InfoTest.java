@@ -8,7 +8,7 @@ import java.util.*;
 
 public class InfoTest {
     final String CLASSNAME = "oracle.jdbc.OracleDriver";
-    final String JDBC = "jdbc:oracle:thin:@10.231.6.65:1521:helowin";
+    final String JDBC = "jdbc:oracle:thin:@//10.231.6.65:1521/helowin";
     final String USERNAME = "budai";
     final String PASSWORD = "123456";
 
@@ -27,10 +27,10 @@ public class InfoTest {
     @Test
     public void TableDemo() {
         List<Map<String, String>> tableDTO = new ArrayList<>();
-        try (Connection con = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
             try {
-                DatabaseMetaData databaseMetadata = con.getMetaData();
-                String schema = "ROOT";
+                DatabaseMetaData databaseMetadata = connection.getMetaData();
+                String schema = "budai";
                 String[] queryType = new String[]{"TABLE", "VIEW"};
                 ResultSet rs = databaseMetadata.getTables(null, schema, null, queryType);
 
@@ -45,10 +45,7 @@ public class InfoTest {
                     tableDTO.add(tableVo);
                 }
             } catch (Exception e) {
-                /*if (!dbType.getDriver().toLowerCase(Locale.ROOT).contains("oracle")) {
-                    throw e;
-                }
-                tableVos.clear();
+                tableDTO.clear();
                 PreparedStatement prepareStatement = connection.prepareStatement(
                         "SELECT NULL AS table_cat,\n" +
                                 "                o.owner AS table_schem,\n" +
@@ -60,20 +57,16 @@ public class InfoTest {
                                 "                AND o.object_type IN ('xxx', 'TABLE', 'VIEW')\n" +
                                 "                ORDER BY table_type, table_schem, table_name"
                 );
-                prepareStatement.setString(1, schema);
+                prepareStatement.setString(1, "budai");
                 ResultSet rs = prepareStatement.executeQuery();
                 while (rs.next()) {
-                    TableVo tableVo = new TableVo();
-                    tableVo.setTableCatalog(rs.getString("TABLE_CAT"));
-
-                    String tableSchema = StringUtils.isBlank(rs.getString("TABLE_SCHEM")) ? schema
-                            : rs.getString("TABLE_SCHEM");
-                    tableVo.setTableSchema(tableSchema);
-                    tableVo.setTableName(rs.getString("TABLE_NAME"));
-                    tableVo.setTableType(rs.getString("TABLE_TYPE"));
-                    tableVo.setRemarks(rs.getString("REMARKS"));
-                    tableVos.add(tableVo);
-                }*/
+                    Map<String, String> tableVo = new HashMap<>();
+                    String tableSchema = StrUtil.isBlank(rs.getString("TABLE_SCHEM")) ? "schema" : rs.getString("TABLE_SCHEM");
+                    tableVo.put("TableSchema", tableSchema);
+                    tableVo.put("TableName", rs.getString("TABLE_NAME"));
+                    tableVo.put("TableType", rs.getString("TABLE_TYPE"));
+                    tableDTO.add(tableVo);
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
