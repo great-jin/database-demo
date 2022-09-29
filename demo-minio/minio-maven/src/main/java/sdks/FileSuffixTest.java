@@ -1,4 +1,4 @@
-package test;
+package sdks;
 
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
@@ -16,7 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MyTest {
+public class FileSuffixTest {
 
     public MinioClient minioClient;
 
@@ -31,7 +31,7 @@ public class MyTest {
     }
 
     @Test
-    public void PutMinio1File() throws Exception {
+    public void SuffixDemo1() throws Exception {
         String bucketName = "testbucket";
         String fileName = "123_user.csv";
 
@@ -60,7 +60,7 @@ public class MyTest {
     }
 
     @Test
-    public void PutMinio2File() throws Exception {
+    public void SuffixDemo2() throws Exception {
         File file = new File("src/main/resources/files/user.csv");
         if (file.isFile()) {
             try (InputStream in = new FileInputStream(file)) {
