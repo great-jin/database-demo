@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +26,7 @@ public class FilesTest {
     public void init() throws Exception {
         minioClient = MinioClient.builder()
                 // 填入 Minio API
-                .endpoint("http://10.231.6.61:9000")
+                .endpoint("http://10.231.6.65:9000")
                 // 填入用户名、密码
                 .credentials("minioadmin", "minio123456")
                 .build();
@@ -83,10 +84,10 @@ public class FilesTest {
     @Test
     public void PutMinioFile() throws Exception {
         StringBuilder builder = new StringBuilder();
+        // 最终在存储桶中的文件名格式：<uuid>_user.csv
         builder.append(UUID.randomUUID());
         builder.append("_");
         builder.append("user.csv");
-        // 最终在存储桶中的文件名格式：<uuid>_user.csv
 
         // 生产环境中文件流通常通过接口参数传入
         File file = new File("src/main/resources/files/user.csv");
@@ -134,5 +135,85 @@ public class FilesTest {
                         .expiry(expires, TimeUnit.HOURS)
                         .build());
         System.out.println(url);
+    }
+
+    /**
+     * Describe：列出当前存储桶下所有文件相关信息
+     */
+    @Test
+    public void ListEntireMinio() throws Exception {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket("bucket")
+                        .build());
+
+        StringBuilder builder = new StringBuilder();
+        for (Result<Item> result : results) {
+            // 对查询结果进行简单拼接
+            builder.append(result.get().objectName());
+            builder.append(", ");
+            builder.append(result.get().lastModified());
+            builder.append(", ");
+            builder.append(result.get().size());
+            builder.append("\n");
+        }
+        System.out.println(builder);
+    }
+
+    /**
+     * Describe：列出当前存储桶下某个时间点之后存入的文件相关信息
+     */
+    @Test
+    public void ListPartMinio() throws Exception {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket("bucket")
+                        .build());
+        StringBuilder builder = new StringBuilder();
+        // 设置时间点
+        Timestamp earliest = Timestamp.valueOf("2021-12-01 00:00:001");
+
+        for (Result<Item> result : results) {
+            Timestamp timestamp = Timestamp.from(result.get().lastModified().toInstant());
+            // 如果文件最新更新时间在上述指定的时间之后进行打印
+            if (timestamp.after(earliest)) {
+                // 打印：文件名，最后创建时间，文件大小
+                builder.append(result.get().objectName());
+                builder.append(", ");
+                builder.append(timestamp);
+                builder.append(", ");
+                builder.append(result.get().size());
+                builder.append("\n");
+            }
+        }
+        System.out.println(builder);
+    }
+
+    /**
+     * Describe：指定从某一个字符之后开始列出文件信息
+     * <p>
+     * 例如 newbucket 桶内存有三个文件： a.csv, b.csv, c.csv,
+     * .startAfter("b") 最终只会输出：b.csv, c.csv
+     */
+    @Test
+    public void ListAlphabetMinio() throws Exception {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket("newbucket")
+                        .startAfter("b")
+                        .build());
+
+        StringBuilder builder = new StringBuilder();
+        for (Result<Item> result : results) {
+            // 打印文件名，最后创建时间，文件大小
+            builder.append(result.get().objectName());
+            builder.append(", ");
+            builder.append(result.get().lastModified());
+            builder.append(", ");
+            builder.append(result.get().size());
+            builder.append("\n");
+        }
+
+        System.out.println(builder);
     }
 }
