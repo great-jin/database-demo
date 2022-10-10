@@ -34,8 +34,8 @@ public class GZIPTest {
         }
 
         try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+             GZIPInputStream unzip = new GZIPInputStream(in);
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            GZIPInputStream unzip = new GZIPInputStream(in);
             byte[] buffer = new byte[1024];
             int n;
             while ((n = unzip.read(buffer)) >= 0) {
