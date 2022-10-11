@@ -59,7 +59,7 @@ public class GZIPTest {
                 GZIPInputStream unzip = new GZIPInputStream(in);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
         ) {
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[1024];
             int n;
             while ((n = unzip.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
