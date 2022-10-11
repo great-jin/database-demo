@@ -68,8 +68,8 @@ public class IOUtils {
      */
     @Test
     public void uploadFile() {
-        String remotePath = "/file/test.txt";
-        String localPath = "src\\main\\resources\\ftp\\test.txt";
+        String remotePath = "/test/ftp-1.txt";
+        String localPath = "src\\main\\resources\\ftp\\ftp-1.txt";
         try (InputStream in = new FileInputStream(localPath)) {
             // Upload file
             boolean isUpload = ftpClient.storeFile(remotePath, in);
@@ -87,8 +87,8 @@ public class IOUtils {
      */
     @Test
     public void downloadFile() {
-        String remotePath = "/file/11.txt";
-        String localPath = "src\\main\\resources\\ftp\\11.txt";
+        String remotePath = "/test/ftp-1.txt";
+        String localPath = "src\\main\\resources\\ftp\\ftp-1.txt";
         try (OutputStream fos = new FileOutputStream(localPath)) {
             // Download file
             boolean isSave = ftpClient.retrieveFile(remotePath, fos);
@@ -104,7 +104,7 @@ public class IOUtils {
      */
     @Test
     public void uploadData() throws IOException {
-        String putPath = "/file";
+        String putPath = "/test";
         String filePath = putPath + "/" + System.currentTimeMillis() + ".gz";
         // Compress content to gzip
         User user = new User("111", "Alex", "123456");
@@ -125,13 +125,14 @@ public class IOUtils {
      */
     @Test
     public void downloadData() {
-        String remotePath = "/file/1665221694460.gz";
+        String remotePath = "/test/1665393224154.gz";
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             // Receive ftp file
             ftpClient.retrieveFile(remotePath, os);
 
             // Uncompress zip to java bean
             byte[] bytes = GZIPTest.uncompress(os.toByteArray());
+            System.out.println(Arrays.toString(bytes));
             User user = objectMapper.readValue(bytes, User.class);
             System.out.println(user);
         } catch (Exception e) {
