@@ -87,14 +87,17 @@ public class FTPTest {
      * Move file store path
      */
     @Test
-    public void moveFile() throws IOException {
+    public void moveFile() {
         // Manual move
-        InputStream inputStream = ftpClient.retrieveFileStream("/test/11.txt");
-        ftpClient.storeFile("/bak/11.txt", inputStream);
-        ftpClient.deleteFile("/test/11.txt");
+        try (InputStream in = ftpClient.retrieveFileStream("/test/11.txt")) {
+            ftpClient.storeFile("/bak/11.txt", in);
+            ftpClient.deleteFile("/test/11.txt");
 
-        // Auto move, equal to linux "mv"
-        ftpClient.rename("/test/11.txt", "/bak/11.txt");
+            // Function equal to linux "mv"
+            ftpClient.rename("/test/11.txt", "/bak/11.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
