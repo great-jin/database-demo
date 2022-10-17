@@ -14,6 +14,7 @@ import xyz.ibudai.util.GZIPTest;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -104,37 +105,72 @@ public class IOUtils {
      */
     @Test
     public void uploadData() throws IOException {
-        String putPath = "/test";
-        String filePath = putPath + "/" + System.currentTimeMillis() + ".gz";
+        String putPath = "/test/store";
+        String filePath = putPath + "/" + UUID.randomUUID() + ".gz";
         // Compress content to gzip
-        User user = new User("111", "Alex", "123456");
+        User user = new User("123", "Alex", "123456");
         byte[] bytes = GZIPTest.compress(objectMapper.writeValueAsBytes(user));
 
+        // Upload file
         try (InputStream in = new ByteArrayInputStream(bytes)) {
-            // Upload file
-            boolean isOk = ftpClient.storeFile(filePath, in);
-
-            System.out.println(isOk);
+            if (ftpClient.storeFile(filePath, in)) {
+                System.out.println("Upload file: 【" + filePath + "】 success.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Test
+    public void uploadAndMonitor() throws InterruptedException {
+        String directory = "/test/read";
+        new Thread(() -> {
+            try {
+                monitorDirectory(directory);
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        }).start();
+        TimeUnit.SECONDS.sleep(2);
+
+        new Thread(() -> {
+            while (true) {
+                String uuid = UUID.randomUUID().toString();
+                String fileName = directory + "/" + uuid + ".gz";
+                // Compress content to gzip
+                User user = new User(uuid, "Alex", "123456");
+                // Upload file
+                try (InputStream in = new ByteArrayInputStream(GZIPTest.compress(objectMapper.writeValueAsBytes(user)))) {
+                    if (ftpClient.storeFile(fileName, in)) {
+                        System.out.println("\nupload: 【" + fileName + "】 success.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        TimeUnit.HOURS.sleep(1);
+    }
+
     /**
      * Download FTP file to local
      */
-    @Test
-    public void downloadData() {
-        String remotePath = "/test/1665393224154.gz";
+    public void downloadData(String filePath) {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             // Receive ftp file
-            ftpClient.retrieveFile(remotePath, os);
+            ftpClient.retrieveFile(filePath, os);
 
             // Uncompress zip to java bean
             byte[] bytes = GZIPTest.uncompress(os.toByteArray());
-            System.out.println(Arrays.toString(bytes));
             User user = objectMapper.readValue(bytes, User.class);
-            System.out.println(user);
+            System.out.println("Receive: " + user);
+            ftpClient.deleteFile(filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,26 +179,21 @@ public class IOUtils {
     /**
      * Listening ftp directory file change
      */
-    @Test
-    public void monitorDirectory() throws Exception {
-        List<String> fileName = Arrays.stream(ftpClient.listFiles("/test"))
+    public void monitorDirectory(String monitorPath) throws Exception {
+        List<String> fileName = Arrays.stream(ftpClient.listFiles(monitorPath))
                 .map(FTPFile::getName)
                 .collect(Collectors.toList());
 
-        System.out.println("Start monitoring....");
+        System.out.println("Start monitoring directory: " + monitorPath);
         while (true) {
-            List<String> latestList = Arrays.stream(ftpClient.listFiles("/test"))
+            List<String> latestList = Arrays.stream(ftpClient.listFiles(monitorPath))
                     .map(FTPFile::getName)
                     .collect(Collectors.toList());
             latestList.removeAll(fileName);
             if (latestList.size() > 0) {
                 System.out.println("Detect new file: " + latestList);
                 latestList.forEach(name -> {
-                    try {
-                        ftpClient.rename("/test/" + name, "/bak/" + name);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    downloadData(monitorPath + "/" + name);
                 });
             }
             TimeUnit.SECONDS.sleep(2);
