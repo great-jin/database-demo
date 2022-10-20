@@ -1,7 +1,5 @@
 package xyz.ibudai.demo.utils;
 
-import xyz.ibudai.demo.bean.User;
-
 import java.io.*;
 
 public class BeanUtils {
@@ -9,22 +7,17 @@ public class BeanUtils {
     private BeanUtils() {
     }
 
-    public static User byteToUser(byte[] bytes) {
-        return byteToObject(bytes, User.class);
-    }
-
     /**
      * 对象序列化为 byte 数组
-     *
-     * @param obj
-     * @return
      */
     public static byte[] objectToByte(Object obj) {
         byte[] bytes = null;
-        try (ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-             ObjectOutputStream outputStream = new ObjectOutputStream(byteArray)) {
-            outputStream.writeObject(obj);
-            outputStream.flush();
+        try (
+                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(byteArray)
+        ) {
+            out.writeObject(obj);
+            out.flush();
             bytes = byteArray.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,15 +27,14 @@ public class BeanUtils {
 
     /**
      * 字节数组转为对象
-     *
-     * @param bytes
-     * @return
      */
     public static <T> T byteToObject(byte[] bytes, Class<T> tClass) {
         Object readObject;
-        try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-             ObjectInputStream inputStream = new ObjectInputStream(in)) {
-            readObject = inputStream.readObject();
+        try (
+                ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
+                ObjectInputStream objIn = new ObjectInputStream(byteIn)
+        ) {
+            readObject = objIn.readObject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
