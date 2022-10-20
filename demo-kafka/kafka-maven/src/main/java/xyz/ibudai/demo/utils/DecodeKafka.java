@@ -16,7 +16,7 @@ public class DecodeKafka implements Deserializer<User> {
 
     @Override
     public User deserialize(String topic, byte[] data) {
-        return BeanUtils.byteToUser(data);
+        return BeanUtils.byteToObject(data, User.class);
     }
 
     @Override

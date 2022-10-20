@@ -12,7 +12,6 @@ public class EncodeKafka implements Serializer<User> {
 
     @Override
     public void configure(Map configs, boolean isKey) {
-
     }
 
     @Override
