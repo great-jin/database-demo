@@ -81,6 +81,9 @@ public class InfoTest {
         System.out.println(schema);
     }
 
+    /**
+     * 获取表结构字段信息
+     */
     @Test
     public void columnsInfo() throws SQLException {
         String schema = "BUDAI";
