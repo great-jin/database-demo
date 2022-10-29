@@ -29,6 +29,9 @@ public class JDBCTest {
         }
     }
 
+    /**
+     * 测试连接有效性
+     */
     @Test
     public void demo() {
         try (Connection con = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {

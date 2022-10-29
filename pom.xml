@@ -25,6 +25,8 @@
         <module>demo-minio</module>
         <module>demo-elasticsearch</module>
         <module>demo-maxcompute</module>
+        <module>demo-hive</module>
+        <module>demo-hbase</module>
     </modules>
 
     <build>

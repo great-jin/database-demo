@@ -33,7 +33,7 @@ spring:
 # MyBatis
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.ibudai.bean
+  type-aliases-package: xyz.ibudai.bean
   # 控制台打印 sql 语句
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
