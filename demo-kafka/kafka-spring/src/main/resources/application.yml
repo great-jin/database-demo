@@ -19,7 +19,7 @@ spring:
       buffer-memory: 33554432
       # key 与 value 编码方式
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: xyz.ibudai.utils.EncodeKafka
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
     # 消费者
     consumer:
       group-id: comsumer
@@ -30,10 +30,13 @@ spring:
       auto-offset-reset: latest
       # key 与 value 解码方式
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: xyz.ibudai.utils.DecodeKafka
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     # 监听器
     listener:
       # 并发数
       concurrency: 6
       ack-mode: MANUAL
+
+kafka:
+  topic: test-topic
 
