@@ -11,17 +11,21 @@
 
     <artifactId>redis-maven</artifactId>
 
+    <properties>
+        <redisson.version>3.17.5</redisson.version>
+        <junit.version>4.13.1</junit.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
-            <version>3.17.5</version>
+            <version>${redisson.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>compile</scope>
+            <version>${junit.version}</version>
         </dependency>
     </dependencies>
 </project>

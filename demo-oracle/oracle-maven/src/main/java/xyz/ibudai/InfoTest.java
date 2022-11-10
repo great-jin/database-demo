@@ -1,7 +1,5 @@
 package xyz.ibudai;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +36,7 @@ public class InfoTest {
 
             while (rs.next()) {
                 Map<String, String> tableVo = new HashMap<>();
-                String tableSchema = StrUtil.isBlank(rs.getString("TABLE_SCHEM")) ? schema : rs.getString("TABLE_SCHEM");
+                String tableSchema = rs.getString("TABLE_SCHEM").isEmpty() ? schema : rs.getString("TABLE_SCHEM");
                 tableVo.put("TableSchema", tableSchema);
                 tableVo.put("TableName", rs.getString("TABLE_NAME"));
                 tableVo.put("TableType", rs.getString("TABLE_TYPE"));
