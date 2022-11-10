@@ -1,6 +1,5 @@
 package xyz.ibudai;
 
-import cn.hutool.core.collection.CollectionUtil;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -37,7 +36,9 @@ public class DiffTime {
         // 获取接入方缺失时间段
         List<String> missDate = new ArrayList<>();
         if (time1.size() != time2.size()) {
-            missDate.addAll(CollectionUtil.subtract(time1, time2));
+            List<String> temp = time1;
+            temp.removeAll(time2);
+            missDate.addAll(temp);
         }
         // 去除缺失时间段，获取双方都包含的时间段
         List<String[]> bothDate = new ArrayList<>();

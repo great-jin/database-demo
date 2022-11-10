@@ -13,6 +13,13 @@
     <artifactId>oracle-spring</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+
+    <properties>
+        <oracle.version>11.2.0.4</oracle.version>
+        <mybatis.version>2.2.2</mybatis.version>
+        <spring-data.version>2.6.2</spring-data.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -22,23 +29,17 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.4</version>
+            <version>${oracle.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.4</version>
+            <version>${mybatis.version}</version>
         </dependency>
-        <!-- 分页数据 -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>3.5.1</version>
+            <version>${spring-data.version}</version>
         </dependency>
     </dependencies>
 

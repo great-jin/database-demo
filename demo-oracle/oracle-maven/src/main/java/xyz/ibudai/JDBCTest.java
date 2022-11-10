@@ -1,6 +1,5 @@
 package xyz.ibudai;
 
-import cn.hutool.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +59,7 @@ public class JDBCTest {
                 for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
                     map.put(result.getMetaData().getColumnName(i), result.getString(i));
                 }
-                list.add(new JSONObject(map));
+                list.add(map);
             }
             System.out.println(list);
         } catch (Exception ex) {
