@@ -15,5 +15,6 @@
     <modules>
         <module>mysql-maven</module>
         <module>mysql-spring</module>
+        <module>mysql-spring-mybatis-plus</module>
     </modules>
 </project>
