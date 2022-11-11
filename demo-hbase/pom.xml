@@ -14,5 +14,6 @@
 
     <modules>
         <module>hbase-maven</module>
+        <module>hbase-spring</module>
     </modules>
 </project>

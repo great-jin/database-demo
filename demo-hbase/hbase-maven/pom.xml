@@ -12,10 +12,16 @@
     <artifactId>hbase-maven</artifactId>
 
     <properties>
+        <hbase.version>2.4.3</hbase.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

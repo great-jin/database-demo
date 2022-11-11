@@ -1,0 +1,10 @@
+server:
+  port: 9090
+
+hbase:
+  config:
+    hbase:
+      zookeeper:
+        quorum: 10.231.6.65
+        property:
+          clientPort: 2181
