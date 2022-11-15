@@ -6,13 +6,13 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.ibudai.service.UserService;
+import xyz.ibudai.service.DMLService;
 
 import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class DMLServiceImpl implements DMLService {
 
     @Autowired
     private HBaseAdmin hBaseAdmin;
@@ -22,16 +22,19 @@ public class UserServiceImpl implements UserService {
 
     public void createTable(String name, String colFamily) throws IOException {
         TableName table = TableName.valueOf(name);
-        if (hBaseAdmin.tableExists(table)) {
+        if (!hBaseAdmin.tableExists(table)) {
+            ColumnFamilyDescriptor columnDescriptor = ColumnFamilyDescriptorBuilder
+                    .newBuilder(Bytes.toBytes(colFamily))
+                    .setMaxVersions(1)
+                    .build();
+            TableDescriptor tableDes = TableDescriptorBuilder
+                    .newBuilder(table)
+                    .setColumnFamily(columnDescriptor)
+                    .build();
+            hBaseAdmin.createTable(tableDes);
+        } else {
             System.out.println("table [" + name + "] exist.");
         }
-
-        ColumnFamilyDescriptor cfd = ColumnFamilyDescriptorBuilder
-                .newBuilder(Bytes.toBytes(colFamily))
-                .setMaxVersions(1).build();
-
-        TableDescriptor tableDes = TableDescriptorBuilder.newBuilder(table).setColumnFamily(cfd).build();
-        hBaseAdmin.createTable(tableDes);
     }
 
     public void putData(String name, String colFamily, String rowKey, Map<String, String> data) throws IOException {
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
                 put.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(entry.getKey()), Bytes.toBytes(entry.getValue()));
             }
             t.put(put);
+            System.out.println(t);
         } else {
             System.out.println("table [" + name + "] does not exist.");
         }
@@ -53,13 +57,17 @@ public class UserServiceImpl implements UserService {
         Table t = connection.getTable(table);
         ResultScanner rs = t.getScanner(new Scan());
         for (Result r : rs) {
-            System.out.println("row:" + new String(r.getRow()));
+            System.out.println("row: " + new String(r.getRow()));
             for (Cell cell : r.rawCells()) {
-                System.out.println("colFamily:" + Bytes.toString(cell.getFamilyArray(), cell.getFamilyOffset(), cell.getFamilyLength()) + ""
-                        + ",qualifier:" + Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()) +
-                        ",value:" + Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
+                System.out.println("\ncolFamily: " + Bytes.toString(cell.getFamilyArray()));
+                System.out.println("value: " + Bytes.toString(cell.getValueArray()));
+                System.out.println("qualifier: " + Bytes.toString(cell.getQualifierArray()));
             }
         }
     }
 
+    @Override
+    public void scanData(String name) throws IOException {
+
+    }
 }
