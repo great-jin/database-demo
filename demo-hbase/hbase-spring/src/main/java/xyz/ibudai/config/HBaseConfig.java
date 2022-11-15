@@ -39,5 +39,4 @@ public class HBaseConfig {
     public HBaseAdmin hBaseAdmin() throws IOException {
         return (HBaseAdmin) getConnection().getAdmin();
     }
-
 }

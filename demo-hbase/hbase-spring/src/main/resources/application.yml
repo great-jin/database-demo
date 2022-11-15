@@ -5,6 +5,6 @@ hbase:
   config:
     hbase:
       zookeeper:
-        quorum: 10.231.6.65
+        quorum: 10.231.6.21
         property:
           clientPort: 2181
