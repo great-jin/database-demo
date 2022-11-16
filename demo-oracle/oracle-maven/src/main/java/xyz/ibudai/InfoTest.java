@@ -1,26 +1,12 @@
 package xyz.ibudai;
 
-import org.junit.Before;
 import org.junit.Test;
+import xyz.ibudai.config.ConnectionUtil;
 
 import java.sql.*;
 import java.util.*;
 
 public class InfoTest {
-
-    final String CLASSNAME = "oracle.jdbc.OracleDriver";
-    final String JDBC = "jdbc:oracle:thin:@//10.231.6.65:1521/helowin";
-    final String USERNAME = "budai";
-    final String PASSWORD = "123456";
-
-    @Before
-    public void Init() {
-        try {
-            Class.forName(CLASSNAME);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 获取所有表名
@@ -28,7 +14,7 @@ public class InfoTest {
     @Test
     public void TableDemo() {
         List<Map<String, String>> tableDTO = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             String schema = "budai";
             String[] queryType = new String[]{"TABLE", "VIEW"};
             DatabaseMetaData metaData = connection.getMetaData();
@@ -56,7 +42,7 @@ public class InfoTest {
     @Test
     public void SchemaDemo() {
         List<String> schema = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             try {
                 DatabaseMetaData metaData = connection.getMetaData();
                 ResultSet rs = metaData.getSchemas();
@@ -87,7 +73,7 @@ public class InfoTest {
         String schema = "BUDAI";
         String tableName = "TB_22091901";
         List<Map<String, String>> tableMap = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+        try (Connection connection = ConnectionUtil.getConnection()) {
             try {
                 // 获取主键列表
                 List<String> primaryKeyList = new ArrayList<>();

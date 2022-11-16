@@ -1,19 +1,15 @@
 package xyz.ibudai;
 
 import org.junit.Test;
+import xyz.ibudai.config.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StructTest {
-
-    final String JDBC = "jdbc:mysql://10.231.6.65:3306/test_db?useSSL=true&useUnicode=true&characterEncoding=utf-8";
-    final String USERNAME = "root";
-    final String PASSWORD = "123456";
 
     @Test
     public void SMDemo() {
@@ -22,7 +18,7 @@ public class StructTest {
         List<String> typeList = new ArrayList<>();
         List<String> remarkList = new ArrayList<>();
 
-        try (Connection conn = DriverManager.getConnection(JDBC, USERNAME, PASSWORD)) {
+        try (Connection conn = ConnectionUtil.getConnection()) {
             DatabaseMetaData dbMetaData = conn.getMetaData();
             ResultSet rs = dbMetaData.getTables(null, null, null, new String[]{"TABLE"});
             while (rs.next()) {
