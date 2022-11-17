@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StructTest {
+public class StructureTest {
 
     @Test
     public void SMDemo() {

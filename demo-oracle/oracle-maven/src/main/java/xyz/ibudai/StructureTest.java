@@ -6,7 +6,7 @@ import xyz.ibudai.config.ConnectionUtil;
 import java.sql.*;
 import java.util.*;
 
-public class InfoTest {
+public class StructureTest {
 
     /**
      * 获取所有表名
