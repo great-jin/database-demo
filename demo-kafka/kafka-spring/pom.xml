@@ -14,7 +14,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <kafka.version>2.9.2</kafka.version>
+        <kafka.version>2.8.5</kafka.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -24,11 +24,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <!-- Kafka -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
             <version>${kafka.version}</version>
-        </dependency>-->
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
