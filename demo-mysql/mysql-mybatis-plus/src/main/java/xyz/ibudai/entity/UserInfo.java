@@ -1,6 +1,7 @@
 package xyz.ibudai.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.io.Serializable;
@@ -21,6 +22,10 @@ public class UserInfo extends Model<UserInfo> {
 
     private String gender;
 
+    /**
+     * 标注表中无该字段，不进行映射
+     */
+    @TableField(exist = false)
     private Date updateTime;
 
 

@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>xyz.ibudai</groupId>
-    <artifactId>mysql-spring-mybatis-plus</artifactId>
+    <artifactId>mysql-mybatis-plus</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
