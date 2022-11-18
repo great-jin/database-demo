@@ -59,9 +59,10 @@ public class DMLServiceImpl implements DMLService {
         for (Result r : rs) {
             System.out.println("row: " + new String(r.getRow()));
             for (Cell cell : r.rawCells()) {
-                System.out.println("\ncolFamily: " + Bytes.toString(cell.getFamilyArray()));
+                System.out.println("colFamily: " + Bytes.toString(cell.getFamilyArray()));
                 System.out.println("value: " + Bytes.toString(cell.getValueArray()));
                 System.out.println("qualifier: " + Bytes.toString(cell.getQualifierArray()));
+                System.out.println();
             }
         }
     }

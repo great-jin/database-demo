@@ -24,10 +24,12 @@ public class HBaseConfig {
 
     @Bean
     public org.apache.hadoop.conf.Configuration configuration() {
-        org.apache.hadoop.conf.Configuration conf = HBaseConfiguration.create();
+        org.apache.hadoop.conf.Configuration configuration = HBaseConfiguration.create();
         Map<String, String> config = hBaseProperties.getConfig();
-        config.forEach(conf::set);
-        return conf;
+        for (String key : config.keySet()) {
+            configuration.set(key, config.get(key));
+        }
+        return configuration;
     }
 
     @Bean
