@@ -1,4 +1,4 @@
-package com.ibudai.service;
+package xyz.ibudai.repository;
 
 public interface IndexService {
 

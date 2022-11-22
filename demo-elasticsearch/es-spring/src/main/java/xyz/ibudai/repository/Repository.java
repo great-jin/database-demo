@@ -1,4 +1,4 @@
-package com.ibudai.repository;
+package xyz.ibudai.repository;
 
 import java.io.Serializable;
 import java.util.List;
