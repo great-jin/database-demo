@@ -1,14 +1,14 @@
-package com.ibudai.controller;
+package xyz.ibudai.controller;
 
-import com.ibudai.model.User;
-import com.ibudai.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xyz.ibudai.model.User;
+import xyz.ibudai.repository.UserService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("es/user")
+@RequestMapping("api/es/document")
 public class UserController {
 
     @Autowired

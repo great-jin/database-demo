@@ -1,8 +1,6 @@
-package com.ibudai.service;
+package xyz.ibudai.repository;
 
-import com.ibudai.model.User;
-import com.ibudai.repository.AbstractRepository;
-import com.ibudai.repository.Repository;
+import xyz.ibudai.model.User;
 
 import java.util.List;
 

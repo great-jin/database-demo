@@ -1,6 +1,5 @@
-package com.ibudai.service.Impl;
+package xyz.ibudai.repository.Impl;
 
-import com.ibudai.service.IndexService;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xyz.ibudai.repository.IndexService;
 
 import java.io.IOException;
 
