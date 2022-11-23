@@ -28,6 +28,14 @@ public class UserInfo extends Model<UserInfo> {
     @TableField(exist = false)
     private Date updateTime;
 
+    public UserInfo() {
+    }
+
+    public UserInfo(Integer id, String name, String gender) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+    }
 
     public Integer getId() {
         return id;

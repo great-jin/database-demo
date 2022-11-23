@@ -1,10 +1,15 @@
 package xyz.ibudai.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import xyz.ibudai.dao.UserInfoDao;
 import xyz.ibudai.entity.UserInfo;
 import xyz.ibudai.service.UserInfoService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * (UserInfo)表服务实现类
@@ -15,5 +20,25 @@ import org.springframework.stereotype.Service;
 @Service("userInfoService")
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoDao, UserInfo> implements UserInfoService {
 
+    @Autowired
+    private UserInfoDao userInfoDao;
+
+    @Autowired
+    private UserInfoService userInfoService;
+
+    public void demo() {
+        List<UserInfo> list1 = userInfoService.list(new QueryWrapper<UserInfo>()
+                .eq("name", "alex"));
+
+        UserInfo userInfo = new UserInfo(111, "Beth", "female");
+        userInfoService.save(userInfo);
+
+        userInfoService.updateById(userInfo);
+        userInfoService.update(userInfo, new UpdateWrapper<UserInfo>()
+                .eq("id", "alex"));
+
+        userInfoService.remove(new QueryWrapper<UserInfo>()
+                .eq("name", "alex"));
+    }
 }
 
