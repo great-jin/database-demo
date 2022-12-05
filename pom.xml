@@ -27,6 +27,7 @@
         <module>demo-hive</module>
         <module>demo-hbase</module>
         <module>demo-rabbitmq</module>
+        <module>a-template</module>
     </modules>
 
     <build>
