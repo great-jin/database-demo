@@ -14,20 +14,22 @@
     </properties>
 
     <modules>
+        <module>a-template</module>
         <module>demo-cdc</module>
         <module>demo-pool</module>
         <module>demo-mysql</module>
         <module>demo-oracle</module>
+        <module>demo-mongo</module>
+        <module>demo-postgres</module>
         <module>demo-redis</module>
         <module>demo-kafka</module>
+        <module>demo-rabbitmq</module>
+        <module>demo-hive</module>
+        <module>demo-hbase</module>
         <module>demo-ftp</module>
         <module>demo-minio</module>
         <module>demo-elasticsearch</module>
         <module>demo-maxcompute</module>
-        <module>demo-hive</module>
-        <module>demo-hbase</module>
-        <module>demo-rabbitmq</module>
-        <module>a-template</module>
     </modules>
 
     <build>
