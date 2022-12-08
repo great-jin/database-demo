@@ -3,7 +3,7 @@ package xyz.ibudai.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class HiveConnection {
+public class HiveConfig {
 
     private static String url = "jdbc:hive2://192.168.173.43:10000/a_db";
     private static String driverName = "org.apache.hive.jdbc.HiveDriver";

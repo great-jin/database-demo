@@ -1,7 +1,7 @@
 package xyz.ibudai;
 
 import org.junit.Test;
-import xyz.ibudai.config.HiveConnection;
+import xyz.ibudai.config.HiveConfig;
 import xyz.ibudai.util.HiveUtils;
 
 import java.sql.Connection;
@@ -22,7 +22,7 @@ public class HiveTest {
     public void demo1() {
         String sql = "analyze table a_db.tb_test compute statistics";
         try (
-                Connection conn = HiveConnection.getHiveConnection();
+                Connection conn = HiveConfig.getHiveConnection();
                 Statement stmt = conn.createStatement();
         ) {
             stmt.execute(sql);
@@ -35,7 +35,7 @@ public class HiveTest {
     public void demo2() {
         String sql = "analyze table ?.? compute statistics";
         try (
-                Connection conn = HiveConnection.getHiveConnection();
+                Connection conn = HiveConfig.getHiveConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
         ) {
             ps.setString(1, databaseName);
@@ -48,7 +48,7 @@ public class HiveTest {
 
     @Test
     public void demo3() {
-        try (Connection conn = HiveConnection.getHiveConnection()) {
+        try (Connection conn = HiveConfig.getHiveConnection()) {
             List<String> schemas = HiveUtils.getAllSchema(conn);
             System.out.println(schemas);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class HiveTest {
 
     @Test
     public void demo4() {
-        try (Connection conn = HiveConnection.getHiveConnection()) {
+        try (Connection conn = HiveConfig.getHiveConnection()) {
             List<String> tables = HiveUtils.getTablesBySchema(conn, "a_db1");
             System.out.println(tables);
         } catch (Exception e) {
