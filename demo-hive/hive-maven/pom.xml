@@ -13,6 +13,7 @@
 
     <properties>
         <junit.version>4.13.2</junit.version>
+        <hive.version>2.1.0</hive.version>
     </properties>
 
     <dependencies>
@@ -20,6 +21,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>${hive.version}</version>
         </dependency>
     </dependencies>
 </project>

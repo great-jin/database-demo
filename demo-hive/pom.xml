@@ -14,5 +14,6 @@
 
     <modules>
         <module>hive-maven</module>
+        <module>hive-spring</module>
     </modules>
 </project>
