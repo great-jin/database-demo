@@ -7,11 +7,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HiveUtils {
 
     /**
-     * 获取所有库
+     * 获取 Hive 所有库名
      */
     public static List<String> getAllSchema(Connection conn) {
         String sql = "show databases";
@@ -23,55 +24,56 @@ public class HiveUtils {
                 schemas.add(rs.getString("database_name"));
             }
         } catch (Exception e) {
-            System.out.println("获取所有库名失败");
+            System.out.println("获取 Hive 库下所有 Schema 失败。");
             throw new RuntimeException(e);
         }
         return schemas;
     }
 
     /**
-     * 获取指定库下所有表
+     * 获取 Hive 指定库下所有表
      */
     public static List<String> getTablesBySchema(Connection conn, String schema) {
         String checkSQL = "use " + schema;
         String querySQL = "show tables";
 
-        List<String> schemas = new ArrayList<>();
+        List<String> tableName = new ArrayList<>();
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(checkSQL);
             stmt.execute(querySQL);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-                schemas.add(rs.getString("tab_name"));
+                tableName.add(rs.getString("tab_name"));
             }
         } catch (Exception e) {
-            System.out.println("获取 【" + schema + "】下所有表失败");
+            System.out.println("获取 Hive 库【" + schema + "】下所有表失败。");
             throw new RuntimeException(e);
         }
-        return schemas;
+        return tableName;
     }
 
     /**
      * 获取 Hive 建表语句
      */
-    public static String getCreateSQL(Connection conn, String databaseName, String tableName) {
-        StringBuilder result = new StringBuilder();
+    public static String getCreateDDLSQL(Connection conn, String databaseName, String tableName) {
         String createSQL = "show create table " + databaseName + "." + tableName;
+
+        StringBuilder builder = new StringBuilder();
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(createSQL);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-                result.append(rs.getString("createtab_stmt"));
+                builder.append(rs.getString("createtab_stmt"));
             }
         } catch (Exception e) {
-            System.out.println("获取建表语句失败.");
+            System.out.println("获取 Hive 建表语句失败.");
             throw new RuntimeException(e);
         }
-        return result.toString();
+        return builder.toString();
     }
 
     /**
-     * 解析分区字段
+     * 解析 Hive 表分区字段
      */
     public static List<String> getPartitionFiled(String sql) {
         List<String> partitionFields = new ArrayList<>();
@@ -88,5 +90,46 @@ public class HiveUtils {
             }
         }
         return partitionFields;
+    }
+
+    /**
+     * 生成统计分析语句
+     *
+     * @return
+     */
+    public static String getStatisticsSQL(Connection conn, String databaseName, String tableName) {
+        StringBuilder builder = new StringBuilder("analyze table ");
+        builder.append(databaseName).append(".").append(tableName);
+
+        String createSQL = getCreateDDLSQL(conn, databaseName, tableName);
+        List<String> partitionList = getPartitionFiled(createSQL);
+        boolean isPartition = partitionList.size() > 0;
+        if (isPartition) {
+            String partitions = com.sun.deploy.util.StringUtils.join(partitionList, ",");
+            builder.append(" partition(").append(partitions).append(")");
+        }
+        builder.append(" compute statistics");
+        return builder.toString();
+    }
+
+    /**
+     * 生成行数查询语句
+     *
+     * @return
+     */
+    public static String getDescribeSQL(String databaseName, String tableName, Map<String, Object> partitions) {
+        StringBuilder builder = new StringBuilder("desc formatted ");
+        builder.append(databaseName).append(".").append(tableName);
+
+        if (!partitions.isEmpty()) {
+            builder.append(" partition(");
+            for (String name : partitions.keySet()) {
+                Object value = partitions.get(name);
+                builder.append(name).append("='").append(value).append("',");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            builder.append(")");
+        }
+        return builder.toString();
     }
 }
