@@ -11,6 +11,47 @@ import java.util.List;
 public class HiveUtils {
 
     /**
+     * 获取所有库
+     */
+    public static List<String> getAllSchema(Connection conn) {
+        String sql = "show databases";
+        List<String> schemas = new ArrayList<>();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                schemas.add(rs.getString("database_name"));
+            }
+        } catch (Exception e) {
+            System.out.println("获取所有库名失败");
+            throw new RuntimeException(e);
+        }
+        return schemas;
+    }
+
+    /**
+     * 获取指定库下所有表
+     */
+    public static List<String> getTablesBySchema(Connection conn, String schema) {
+        String checkSQL = "use " + schema;
+        String querySQL = "show tables";
+
+        List<String> schemas = new ArrayList<>();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(checkSQL);
+            stmt.execute(querySQL);
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                schemas.add(rs.getString("tab_name"));
+            }
+        } catch (Exception e) {
+            System.out.println("获取 【" + schema + "】下所有表失败");
+            throw new RuntimeException(e);
+        }
+        return schemas;
+    }
+
+    /**
      * 获取 Hive 建表语句
      */
     public static String getCreateSQL(Connection conn, String databaseName, String tableName) {
