@@ -11,7 +11,7 @@ import java.util.Map;
 public class StatisticsTest {
 
     private final String databaseName = "a_db";
-    private final String tableName = "tb_test";
+    private final String tableName = "tb_test3";
 
     /**
      * 执行 Hive 分析命令

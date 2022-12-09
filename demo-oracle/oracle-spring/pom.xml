@@ -13,7 +13,6 @@
     <artifactId>oracle-spring</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-
     <properties>
         <oracle.version>11.2.0.4</oracle.version>
         <mybatis.version>2.2.2</mybatis.version>

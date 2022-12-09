@@ -105,7 +105,11 @@ public class HiveUtils {
         List<String> partitionList = getPartitionFiled(createSQL);
         boolean isPartition = partitionList.size() > 0;
         if (isPartition) {
-            String partitions = com.sun.deploy.util.StringUtils.join(partitionList, ",");
+            StringBuilder partitions = new StringBuilder();
+            for (String s : partitionList) {
+                partitions.append(s).append(",");
+            }
+            partitions.deleteCharAt(partitions.length() - 1);
             builder.append(" partition(").append(partitions).append(")");
         }
         builder.append(" compute statistics");
