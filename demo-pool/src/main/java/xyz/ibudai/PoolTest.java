@@ -3,8 +3,9 @@ package xyz.ibudai;
 import org.junit.Before;
 import org.junit.Test;
 import xyz.ibudai.model.JDBCProperty;
-import xyz.ibudai.utils.ConnectionUtil;
+import xyz.ibudai.utils.BasicPoolUtil;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +42,9 @@ public class PoolTest {
         String sql = "select * from tb_user";
         Map<String, Object> map = new LinkedHashMap<>();
         List<Map<String, Object>> list = new ArrayList<>();
-        try (Connection con = ConnectionUtil.getConnection(jdbcProp)) {
+
+        DataSource dataSource = BasicPoolUtil.buildDatasource(jdbcProp);
+        try (Connection con = dataSource.getConnection()) {
             Statement stmt = con.createStatement();
             stmt.executeQuery(sql);
             ResultSet result = stmt.getResultSet();
