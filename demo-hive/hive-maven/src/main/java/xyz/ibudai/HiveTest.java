@@ -5,7 +5,6 @@ import xyz.ibudai.config.HiveConfig;
 import xyz.ibudai.util.HiveUtils;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -16,38 +15,10 @@ public class HiveTest {
     private final String tableName = "tb_test";
 
     /**
-     * 生成表信息
+     * 获取所有 Schema
      */
     @Test
-    public void demo1() {
-        String sql = "analyze table a_db.tb_test compute statistics";
-        try (
-                Connection conn = HiveConfig.getHiveConnection();
-                Statement stmt = conn.createStatement();
-        ) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
     public void demo2() {
-        String sql = "analyze table ?.? compute statistics";
-        try (
-                Connection conn = HiveConfig.getHiveConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-        ) {
-            ps.setString(1, databaseName);
-            ps.setString(2, tableName);
-            ps.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    public void demo3() {
         try (Connection conn = HiveConfig.getHiveConnection()) {
             List<String> schemas = HiveUtils.getAllSchema(conn);
             System.out.println(schemas);
@@ -56,13 +27,32 @@ public class HiveTest {
         }
     }
 
+    /**
+     * 获取 Schema 下所有表名
+     */
     @Test
-    public void demo4() {
+    public void demo3() {
         try (Connection conn = HiveConfig.getHiveConnection()) {
-            List<String> tables = HiveUtils.getTablesBySchema(conn, "a_db1");
+            List<String> tables = HiveUtils.getTablesBySchema(conn, databaseName);
             System.out.println(tables);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 生成表信息
+     */
+    @Test
+    public void demo1() {
+        String sql = "analyze table " + databaseName + "." + tableName + " compute statistics";
+        try (
+                Connection conn = HiveConfig.getHiveConnection();
+                Statement stmt = conn.createStatement();
+        ) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -14,23 +14,6 @@ public class StatisticsTest {
     private final String tableName = "tb_test";
 
     /**
-     * 生成表信息
-     */
-    @Test
-    public void demo1() {
-        String sql = "analyze table a_db.tb_test compute statistics";
-
-        try (
-                Connection conn = HiveConfig.getHiveConnection();
-                Statement stmt = conn.createStatement();
-        ) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * 执行 Hive 分析命令
      */
     @Test
