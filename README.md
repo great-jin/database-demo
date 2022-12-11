@@ -11,15 +11,15 @@
 
 ## 支持的数据库
 ### 1. 已支持
-- **MySQL**: Maven、SpringBoot
-- **Oracle**: Maven、SpringBoot
-- **Redis**: Maven、SpringBoot
-- **Kafka**: Maven、SpringBoot
+- **MySQL**: Maven、Spring Boot
+- **Oracle**: Maven、Spring Boot
+- **Redis**: Maven、Spring Boot
+- **Kafka**: Maven、Spring Boot
 - **FTP**: Maven
-- **MinIO**: Maven、SpringBoot
+- **MinIO**: Maven、Spring Boot
 - **Hive**: Maven
 - **MaxCompute**: Maven
-- **Elasticsearch**: SpringBoot
+- **Elasticsearch**: Spring Boot
 
 
 ### 2.待支持
