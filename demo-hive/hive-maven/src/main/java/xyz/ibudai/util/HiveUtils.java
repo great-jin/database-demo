@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +95,6 @@ public class HiveUtils {
 
     /**
      * 生成统计分析语句
-     *
-     * @return
      */
     public static String getStatisticsSQL(Connection conn, String databaseName, String tableName) {
         StringBuilder builder = new StringBuilder("analyze table ");
@@ -118,8 +117,6 @@ public class HiveUtils {
 
     /**
      * 生成行数查询语句
-     *
-     * @return
      */
     public static String getDescribeSQL(String databaseName, String tableName, Map<String, Object> partitions) {
         StringBuilder builder = new StringBuilder("desc formatted ");
@@ -135,5 +132,21 @@ public class HiveUtils {
             builder.append(")");
         }
         return builder.toString();
+    }
+
+    /**
+     * 解析表行数结果
+     */
+    public static Number getRowCount(ResultSet rs) throws SQLException {
+        int num = 0;
+        while (rs.next()) {
+            String dataType = rs.getString("data_type");
+            if (dataType != null && dataType.replaceAll(" ", "").equals("numRows")) {
+                String countStr = rs.getString("comment");
+                countStr = countStr.replaceAll(" ", "");
+                num = Integer.parseInt(countStr);
+            }
+        }
+        return num;
     }
 }
