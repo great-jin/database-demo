@@ -18,7 +18,7 @@ public class HiveTest {
      * 获取所有 Schema
      */
     @Test
-    public void demo2() {
+    public void demo1() {
         try (Connection conn = HiveConfig.getHiveConnection()) {
             List<String> schemas = HiveUtils.getAllSchema(conn);
             System.out.println(schemas);
@@ -31,7 +31,7 @@ public class HiveTest {
      * 获取 Schema 下所有表名
      */
     @Test
-    public void demo3() {
+    public void demo2() {
         try (Connection conn = HiveConfig.getHiveConnection()) {
             List<String> tables = HiveUtils.getTablesBySchema(conn, databaseName);
             System.out.println(tables);
@@ -44,7 +44,7 @@ public class HiveTest {
      * 生成表信息
      */
     @Test
-    public void demo1() {
+    public void demo3() {
         String sql = "analyze table " + databaseName + "." + tableName + " compute statistics";
         try (
                 Connection conn = HiveConfig.getHiveConnection();
