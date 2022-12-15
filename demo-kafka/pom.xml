@@ -14,6 +14,6 @@
 
     <modules>
         <module>kafka-maven</module>
-        <module>kafka-spring</module>
+<!--        <module>kafka-spring</module>-->
     </modules>
 </project>
