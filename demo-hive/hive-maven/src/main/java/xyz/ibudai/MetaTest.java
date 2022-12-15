@@ -58,12 +58,13 @@ public class MetaTest {
      */
     @Test
     public void demo2() throws Exception {
-        List<String> partition = new ArrayList<>();
-        partition.add("year=2022/month=11");
-
+        // 统计所有分区数据
         List<Partition> result = client.listPartitions(dbName, tableName, (short) -1);
         System.out.println("All partition: " + result);
 
+        // 统计指定分区数据
+        List<String> partition = new ArrayList<>();
+        partition.add("year=2022/month=11");
         List<Partition> result1 = client.getPartitionsByNames(dbName, tableName, partition);
         System.out.println("Specify partition: " + result1);
     }
