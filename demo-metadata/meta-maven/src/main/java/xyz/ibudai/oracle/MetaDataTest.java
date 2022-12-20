@@ -9,8 +9,8 @@ import java.util.*;
 
 public class MetaDataTest {
 
-    private final String schema = "ibudai";
-    private final String tableName = "TB_22091901";
+    private final String schema = "IBUDAI";
+    private final String tableName = "TB_121501";
 
     /**
      * 获取 Schema 下所有表名
@@ -28,11 +28,11 @@ public class MetaDataTest {
                 Map<String, String> tableVo = new HashMap<>();
                 String tableSchema = rs.getString("TABLE_SCHEM").isEmpty() ?
                         schema : rs.getString("TABLE_SCHEM");
-                tableVo.put("TableSchema", tableSchema);
+                tableVo.put("Schema", tableSchema);
                 tableVo.put("TableName", rs.getString("TABLE_NAME"));
-                tableVo.put("TableType", rs.getString("TABLE_TYPE"));
-                tableVo.put("TableCatalog", rs.getString("TABLE_CAT"));
-                tableVo.put("Remarks", rs.getString("REMARKS"));
+                tableVo.put("Type", rs.getString("TABLE_TYPE"));
+                tableVo.put("Catalog", rs.getString("TABLE_CAT"));
+                tableVo.put("Remark", rs.getString("REMARKS"));
                 tableMap.add(tableVo);
             }
         } catch (SQLException e) {
@@ -94,18 +94,13 @@ public class MetaDataTest {
                     String columnName = columnRs.getString("COLUMN_NAME");
                     Integer isPrimaryKey = primaryKeyList.contains(columnName) ? 1 : 0;
                     columnVo.put("ColumnName", columnName);
-                    columnVo.put("IsPrimaryKey", isPrimaryKey == 1 ? "yes" : "no");
-                    columnVo.put("DataType", columnRs.getString("DATA_TYPE"));
                     columnVo.put("TypeName", columnRs.getString("TYPE_NAME"));
                     columnVo.put("ColumnSize", columnRs.getString("COLUMN_SIZE"));
-                    columnVo.put("DecimalDigits", columnRs.getString("DECIMAL_DIGITS"));
                     columnVo.put("Nullable", columnRs.getString("NULLABLE"));
-                    columnVo.put("IsNullable", columnRs.getString("IS_NULLABLE"));
-                    columnVo.put("Remarks", columnRs.getString("REMARKS"));
-                    columnVo.put("ColumnDef", columnRs.getString("COLUMN_DEF"));
+                    columnVo.put("IsPrimaryKey", isPrimaryKey == 1 ? "yes" : "no");
                     columnVo.put("NumPrecRadix", columnRs.getString("NUM_PREC_RADIX"));
                     columnVo.put("CharOctetLength", columnRs.getString("CHAR_OCTET_LENGTH"));
-                    columnVo.put("OrdinalPosition", String.valueOf(columnRs.getInt("ORDINAL_POSITION")));
+                    columnVo.put("Remarks", columnRs.getString("REMARKS"));
                     tableMap.add(columnVo);
                 }
             } catch (Exception e) {
