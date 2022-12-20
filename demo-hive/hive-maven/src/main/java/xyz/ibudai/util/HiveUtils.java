@@ -7,13 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class HiveUtils {
 
     /**
-     * 获取 Hive 所有库名
+     * 获取 Hive 所有库
      */
     public static List<String> getAllSchema(Connection conn) {
         String sql = "show databases";
@@ -54,6 +55,26 @@ public class HiveUtils {
     }
 
     /**
+     * 解析 Hive 表分区字段
+     */
+    public static List<String> getPartitionField(String sql) {
+        List<String> partitionFields = new ArrayList<>();
+        if (sql.contains("PARTITIONED BY")) {
+            String result = sql.substring(sql.indexOf("PARTITIONED BY"), sql.indexOf("ROW FORMAT SERDE"));
+            result = result.substring(result.indexOf("(") + 1, result.indexOf(")"));
+            result = result.replaceAll(" ", "");
+            String[] array = StringUtils.split(result, ",");
+
+            for (String it : array) {
+                int start = StringUtils.ordinalIndexOf(it, "`", 1) + 1;
+                int end = StringUtils.ordinalIndexOf(it, "`", 2);
+                partitionFields.add(it.substring(start, end));
+            }
+        }
+        return partitionFields;
+    }
+
+    /**
      * 获取 Hive 建表语句
      */
     public static String getCreateDDLSQL(Connection conn, String databaseName, String tableName) {
@@ -74,34 +95,14 @@ public class HiveUtils {
     }
 
     /**
-     * 解析 Hive 表分区字段
-     */
-    public static List<String> getPartitionFiled(String sql) {
-        List<String> partitionFields = new ArrayList<>();
-        if (sql.contains("PARTITIONED BY")) {
-            String result = sql.substring(sql.indexOf("PARTITIONED BY"), sql.indexOf("ROW FORMAT SERDE"));
-            result = result.substring(result.indexOf("(") + 1, result.indexOf(")"));
-            result = result.replaceAll(" ", "");
-            String[] array = StringUtils.split(result, ",");
-
-            for (String it : array) {
-                int start = StringUtils.ordinalIndexOf(it, "`", 1) + 1;
-                int end = StringUtils.ordinalIndexOf(it, "`", 2);
-                partitionFields.add(it.substring(start, end));
-            }
-        }
-        return partitionFields;
-    }
-
-    /**
-     * 生成统计分析语句
+     * 构造 Hive 表统计分析语句
      */
     public static String getStatisticsSQL(Connection conn, String databaseName, String tableName) {
         StringBuilder builder = new StringBuilder("analyze table ");
         builder.append(databaseName).append(".").append(tableName);
 
         String createSQL = getCreateDDLSQL(conn, databaseName, tableName);
-        List<String> partitionList = getPartitionFiled(createSQL);
+        List<String> partitionList = getPartitionField(createSQL);
         boolean isPartition = partitionList.size() > 0;
         if (isPartition) {
             StringBuilder partitions = new StringBuilder();
@@ -116,7 +117,7 @@ public class HiveUtils {
     }
 
     /**
-     * 生成行数查询语句
+     * 构造 Hive 表行数查询语句
      */
     public static String getDescribeSQL(String databaseName, String tableName, Map<String, Object> partitions) {
         StringBuilder builder = new StringBuilder("desc formatted ");
@@ -135,18 +136,33 @@ public class HiveUtils {
     }
 
     /**
-     * 解析表行数结果
+     * 获取详细统计信息
      */
-    public static Number getRowCount(ResultSet rs) throws SQLException {
-        int num = 0;
+    public static Map<String, Integer> getCountInfo(ResultSet rs) throws SQLException {
+        Map<String, Integer> infoMap = new HashMap<>();
         while (rs.next()) {
             String dataType = rs.getString("data_type");
-            if (dataType != null && dataType.replaceAll(" ", "").equals("numRows")) {
-                String countStr = rs.getString("comment");
-                countStr = countStr.replaceAll(" ", "");
-                num = Integer.parseInt(countStr);
+            if (dataType == null) {
+                continue;
+            }
+            dataType = dataType.replaceAll(" ", "");
+            String countStr;
+            switch (dataType) {
+                case "numFiles":
+                    countStr = rs.getString("comment");
+                    countStr = countStr.replaceAll(" ", "");
+                    infoMap.put("numFiles", Integer.parseInt(countStr));
+                case "numRows":
+                    countStr = rs.getString("comment");
+                    countStr = countStr.replaceAll(" ", "");
+                    infoMap.put("numRows", Integer.parseInt(countStr));
+                    break;
+                case "totalSize":
+                    countStr = rs.getString("comment");
+                    countStr = countStr.replaceAll(" ", "");
+                    infoMap.put("totalSize", Integer.parseInt(countStr));
             }
         }
-        return num;
+        return infoMap;
     }
 }

@@ -19,7 +19,7 @@ public class StatisticsTest {
      * 执行 Hive 分析命令
      */
     @Test
-    public void demo1() {
+    public void analyzeDemo() {
         String analyzeSql = "";
         try (
                 Connection conn = HiveConfig.getHiveConnection();
@@ -33,14 +33,17 @@ public class StatisticsTest {
         }
     }
 
+    /**
+     * 查询 Hive 统计信息
+     */
     @Test
-    public void demo2() {
+    public void descDemo() {
         try (
                 Connection conn = HiveConfig.getHiveConnection();
                 Statement stmt = conn.createStatement()
         ) {
             String createSQL = HiveUtils.getCreateDDLSQL(conn, databaseName, tableName);
-            List<String> partitionList = HiveUtils.getPartitionFiled(createSQL);
+            List<String> partitionList = HiveUtils.getPartitionField(createSQL);
             List<String> partitionValues = new ArrayList<>();
             if (!partitionList.isEmpty()) {
                 String partitionSQL = "show partitions " + databaseName + "." + tableName;
@@ -55,20 +58,26 @@ public class StatisticsTest {
             }
 
             int count = 0;
+            int totalSize = 0;
             if (partitionValues.size() > 0) {
                 for (String it : partitionValues) {
                     String descSQL = "desc formatted " + databaseName + "." + tableName + " partition(" + it + ")";
                     stmt.execute(descSQL);
                     ResultSet rs = stmt.getResultSet();
-                    count += HiveUtils.getRowCount(rs).intValue();
+                    Map<String, Integer> infoMap = HiveUtils.getCountInfo(rs);
+                    count += infoMap.get("numRows");
+                    totalSize += infoMap.get("totalSize");
                 }
             } else {
                 String descSQL = "desc formatted " + databaseName + "." + tableName;
                 stmt.execute(descSQL);
                 ResultSet rs = stmt.getResultSet();
-                count = HiveUtils.getRowCount(rs).intValue();
+                Map<String, Integer> infoMap = HiveUtils.getCountInfo(rs);
+                count += infoMap.get("numRows");
+                totalSize += infoMap.get("totalSize");
             }
             System.out.println("Count: " + count);
+            System.out.println("TotalSize: " + totalSize);
         } catch (SQLException e) {
             e.printStackTrace();
         }
