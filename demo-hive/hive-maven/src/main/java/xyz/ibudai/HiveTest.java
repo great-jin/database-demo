@@ -4,9 +4,8 @@ import org.junit.Test;
 import xyz.ibudai.config.HiveConfig;
 import xyz.ibudai.util.HiveUtils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HiveTest {
@@ -37,22 +36,6 @@ public class HiveTest {
             System.out.println(tables);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 生成表信息
-     */
-    @Test
-    public void demo3() {
-        String sql = "analyze table " + databaseName + "." + tableName + " compute statistics";
-        try (
-                Connection conn = HiveConfig.getHiveConnection();
-                Statement stmt = conn.createStatement();
-        ) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }
