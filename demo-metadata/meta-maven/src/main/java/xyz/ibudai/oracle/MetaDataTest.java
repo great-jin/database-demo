@@ -1,39 +1,44 @@
-package xyz.ibudai;
+package xyz.ibudai.oracle;
 
 import org.junit.Test;
-import xyz.ibudai.config.ConnectionUtil;
+import xyz.ibudai.common.DbType;
+import xyz.ibudai.config.ConnectionUtils;
 
 import java.sql.*;
 import java.util.*;
 
-public class StructureTest {
+public class MetaDataTest {
+
+    private final String schema = "ibudai";
+    private final String tableName = "TB_22091901";
 
     /**
-     * 获取所有表名
+     * 获取 Schema 下所有表名
      */
     @Test
     public void TableDemo() {
-        List<Map<String, String>> tableDTO = new ArrayList<>();
-        try (Connection connection = ConnectionUtil.getConnection()) {
-            String schema = "budai";
-            String[] queryType = new String[]{"TABLE", "VIEW"};
+        String[] queryType = new String[]{"TABLE", "VIEW"};
+        List<Map<String, String>> tableMap = new ArrayList<>();
+
+        try (Connection connection = ConnectionUtils.getConnection(DbType.ORACLE)) {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet rs = metaData.getTables(null, schema, null, queryType);
 
             while (rs.next()) {
                 Map<String, String> tableVo = new HashMap<>();
-                String tableSchema = rs.getString("TABLE_SCHEM").isEmpty() ? schema : rs.getString("TABLE_SCHEM");
+                String tableSchema = rs.getString("TABLE_SCHEM").isEmpty() ?
+                        schema : rs.getString("TABLE_SCHEM");
                 tableVo.put("TableSchema", tableSchema);
                 tableVo.put("TableName", rs.getString("TABLE_NAME"));
                 tableVo.put("TableType", rs.getString("TABLE_TYPE"));
                 tableVo.put("TableCatalog", rs.getString("TABLE_CAT"));
                 tableVo.put("Remarks", rs.getString("REMARKS"));
-                tableDTO.add(tableVo);
+                tableMap.add(tableVo);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(tableDTO);
+        System.out.println(tableMap);
     }
 
     /**
@@ -41,28 +46,27 @@ public class StructureTest {
      */
     @Test
     public void SchemaDemo() {
-        List<String> schema = new ArrayList<>();
-        try (Connection connection = ConnectionUtil.getConnection()) {
+        List<String> schemaList = new ArrayList<>();
+        try (Connection connection = ConnectionUtils.getConnection(DbType.ORACLE)) {
             try {
                 DatabaseMetaData metaData = connection.getMetaData();
                 ResultSet rs = metaData.getSchemas();
                 while (rs.next()) {
-                    schema.add(rs.getString(1));
+                    schemaList.add(rs.getString(1));
                 }
             } catch (Exception e) {
-                schema.clear();
+                schemaList.clear();
                 PreparedStatement statement = connection.prepareStatement(
-                        "select username as table_schem from " +
-                                "all_users order by table_schem");
+                        "select username as table_schem from all_users order by table_schem");
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
-                    schema.add(rs.getString(1));
+                    schemaList.add(rs.getString(1));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(schema);
+        System.out.println(schemaList);
     }
 
     /**
@@ -70,10 +74,8 @@ public class StructureTest {
      */
     @Test
     public void columnsInfo() throws SQLException {
-        String schema = "BUDAI";
-        String tableName = "TB_22091901";
         List<Map<String, String>> tableMap = new ArrayList<>();
-        try (Connection connection = ConnectionUtil.getConnection()) {
+        try (Connection connection = ConnectionUtils.getConnection(DbType.ORACLE)) {
             try {
                 // 获取主键列表
                 List<String> primaryKeyList = new ArrayList<>();
