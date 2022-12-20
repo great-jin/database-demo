@@ -3,11 +3,6 @@ package xyz.ibudai;
 import org.junit.Test;
 import xyz.ibudai.config.ConnectionUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 

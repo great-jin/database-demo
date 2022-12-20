@@ -16,12 +16,12 @@ public class BlogTest {
         String sql = "insert into tb_file values (?, ?)";
         try (
                 Connection conn = ConnectionUtil.getConnection();
-                PreparedStatement pStmt = conn.prepareStatement(sql);
+                PreparedStatement ps = conn.prepareStatement(sql);
                 InputStream in = Files.newInputStream(Paths.get("src\\main\\resources\\file\\table-info.xlsx"))
         ) {
-            pStmt.setString(1, UUID.randomUUID().toString());
-            pStmt.setBlob(2, in);
-            pStmt.execute();
+            ps.setString(1, UUID.randomUUID().toString());
+            ps.setBlob(2, in);
+            ps.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

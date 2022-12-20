@@ -15,7 +15,7 @@ public class JDBCTest {
     private List<Map<String, Object>> list = new ArrayList<>();
 
     @Test
-    public void QueryDemo() {
+    public void demo() {
         String sql = "select * from user_info";
         try (
                 Connection con = ConnectionUtil.getConnection();
@@ -29,14 +29,14 @@ public class JDBCTest {
                 }
                 list.add(map);
             }
+            System.out.println(list);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println(list);
     }
 
     @Test
-    public void preparedStatementDemo() {
+    public void psDemo() {
         String sql = "select * from user_info where id = ?";
         try (
                 Connection con = ConnectionUtil.getConnection();
@@ -50,9 +50,9 @@ public class JDBCTest {
                 }
                 list.add(map);
             }
+            System.out.println(list);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println(list);
     }
 }
