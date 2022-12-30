@@ -97,7 +97,15 @@ public class StatisticsTest {
         tables.add("tb_test");
         tables.add("tb_test3");
         List<Map<String, Object>> before = getTableDetail(schema, tables);
-        List<Map<String, Object>> change = getChangeTable(before, before);
+        Map<String, Object> map = before.get(1);
+        List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("totalSize");
+        Map<String, Object> map1 = list.get(0);
+        map1.put("totalSize", 35);
+        map.put("totalSize", list);
+        before.set(1, map);
+
+        List<Map<String, Object>> after = getTableDetail(schema, tables);
+        List<Map<String, Object>> change = getChangeTable(before, after);
         System.out.println(change);
     }
 
@@ -116,8 +124,8 @@ public class StatisticsTest {
                 List<String> partitionFields = HiveUtils.getPartitionField(createSQL);
                 if (partitionFields.isEmpty()) {
                     infoMap.put("isPartition", false);
-                    String noPartitonSQL = "desc formatted " + schema + "." + tb;
-                    stmt.execute(noPartitonSQL);
+                    String noPartitionSQL = "desc formatted " + schema + "." + tb;
+                    stmt.execute(noPartitionSQL);
                     Map<String, Integer> map = HiveUtils.getCountInfo(stmt.getResultSet());
                     infoMap.put("totalSize", map.get("totalSize"));
                 } else {
@@ -135,9 +143,9 @@ public class StatisticsTest {
                     for (List<String> it : pValueList) {
                         Map<String, Object> map = new HashMap<>();
                         String partitionValues = StringUtils.join(it, ",");
-                        String partitonSQL = "desc formatted " + schema + "." + tb +
+                        String partitionSQL = "desc formatted " + schema + "." + tb +
                                 " partition(" + partitionValues + ")";
-                        stmt.execute(partitonSQL);
+                        stmt.execute(partitionSQL);
                         Map<String, Integer> countMap = HiveUtils.getCountInfo(stmt.getResultSet());
                         map.put("partition", partitionValues);
                         map.put("totalSize", countMap.get("totalSize"));
@@ -153,46 +161,61 @@ public class StatisticsTest {
         }
     }
 
-    private List<Map<String, Object>> getChangeTable(List<Map<String, Object>> before, List<Map<String, Object>> after) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        after.forEach(af -> {
-            String afterTableName = (String) af.get("tableName");
-            boolean isPartition = (boolean) af.get("isPartition");
-            before.forEach(bf -> {
-                String beforeTableName = (String) bf.get("tableName");
-                if (beforeTableName.equals(afterTableName)) {
-                    if (!isPartition) {
-                        int beforeSize = (Integer) bf.get("totalSize");
-                        int afterSize = (Integer) af.get("totalSize");
-                        if (afterSize - beforeSize > 1000) {
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("tableName", afterTableName);
-                            map.put("partition", "");
-                            list.add(map);
-                        }
-                    } else {
-                        List<Map<String, Object>> afterMap = (List<Map<String, Object>>) af.get("totalSize");
-                        List<Map<String, Object>> beforeMap = (List<Map<String, Object>>) af.get("totalSize");
-                        afterMap.forEach(am -> {
-                            String afterPartition = (String) am.get("partition");
-                            beforeMap.forEach(bm -> {
-                                String beforePartition = (String) am.get("partition");
-                                if (afterPartition.equals(beforePartition)) {
-                                    int afterSize = (Integer) am.get("totalSize");
-                                    int beforeSize = (Integer) bm.get("totalSize");
-                                    if (afterSize - beforeSize > 1000) {
-                                        Map<String, Object> map = new HashMap<>();
-                                        map.put("tableName", afterTableName);
-                                        map.put("partition", afterPartition);
-                                        list.add(map);
-                                    }
-                                }
-                            });
-                        });
-                    }
-                }
-            });
+    private List<Map<String, Object>> getChangeTable(List<Map<String, Object>> beforeTableList, List<Map<String, Object>> afterTableList) {
+        Map<String, Object> beforeTbMap = new HashMap<>();
+        beforeTableList.forEach(it -> {
+            beforeTbMap.put((String) it.get("tableName"), it);
         });
-        return list;
+
+        List<Map<String, Object>> changeTbList = new ArrayList<>();
+        afterTableList.forEach(af -> {
+            String afterTbName = (String) af.get("tableName");
+            if (beforeTbMap.get(afterTbName) != null) {
+                Map<String, Object> beforeTbInfo = (Map<String, Object>) beforeTbMap.get(afterTbName);
+                boolean isPartition = (boolean) af.get("isPartition");
+                if (!isPartition) {
+                    int afterSize = (Integer) af.get("totalSize");
+                    int beforeSize = (Integer) beforeTbInfo.get("totalSize");
+                    if (afterSize - beforeSize > 10) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("tableName", afterTbName);
+                        map.put("partition", "");
+                        changeTbList.add(map);
+                    }
+                } else {
+                    List<Map<String, Object>> afterPartitionList = (List<Map<String, Object>>) af.get("totalSize");
+                    List<Map<String, Object>> beforePartitionList = (List<Map<String, Object>>) beforeTbInfo.get("totalSize");
+                    Map<String, Object> beforePartitionMap = new HashMap<>();
+                    beforePartitionList.forEach(it -> {
+                        beforePartitionMap.put((String) it.get("partition"), it);
+                    });
+                    afterPartitionList.forEach(it -> {
+                        String afterPartition = (String) it.get("partition");
+                        Map<String, Object> beforePartitionInfo = (Map<String, Object>) beforePartitionMap.get(afterPartition);
+                        if (beforePartitionInfo != null) {
+                            int afterSize = (Integer) it.get("totalSize");
+                            int beforeSize = (Integer) beforePartitionInfo.get("totalSize");
+                            if (afterSize - beforeSize > 10) {
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("tableName", afterTbName);
+                                map.put("partition", afterPartition);
+                                changeTbList.add(map);
+                            }
+                        } else {
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("tableName", afterTbName);
+                            map.put("partition", afterPartition);
+                            changeTbList.add(map);
+                        }
+                    });
+                }
+            } else {
+                Map<String, Object> map = new HashMap<>();
+                map.put("tableName", afterTbName);
+                map.put("partition", "");
+                changeTbList.add(map);
+            }
+        });
+        return changeTbList;
     }
 }
