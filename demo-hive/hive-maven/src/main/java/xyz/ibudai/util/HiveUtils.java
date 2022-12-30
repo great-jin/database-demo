@@ -6,10 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HiveUtils {
 
@@ -72,6 +69,25 @@ public class HiveUtils {
             }
         }
         return partitionFields;
+    }
+
+    /**
+     * 获取每个分区的值
+     */
+    public static List<List<String>> getPartitionValues(Connection conn, String databaseName, String tableName) {
+        List<List<String>> list = new ArrayList<>();
+        try (Statement stmt = conn.createStatement()) {
+            String sql = "show partitions " + databaseName + "." + tableName;
+            stmt.execute(sql);
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                String[] par = rs.getString(1).split("/");
+                list.add(Arrays.asList(par));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 
     /**
@@ -148,10 +164,6 @@ public class HiveUtils {
             dataType = dataType.replaceAll(" ", "");
             String countStr;
             switch (dataType) {
-                case "numFiles":
-                    countStr = rs.getString("comment");
-                    countStr = countStr.replaceAll(" ", "");
-                    infoMap.put("numFiles", Integer.parseInt(countStr));
                 case "numRows":
                     countStr = rs.getString("comment");
                     countStr = countStr.replaceAll(" ", "");
@@ -161,6 +173,10 @@ public class HiveUtils {
                     countStr = rs.getString("comment");
                     countStr = countStr.replaceAll(" ", "");
                     infoMap.put("totalSize", Integer.parseInt(countStr));
+                case "numFiles":
+                    countStr = rs.getString("comment");
+                    countStr = countStr.replaceAll(" ", "");
+                    infoMap.put("numFiles", Integer.parseInt(countStr));
             }
         }
         return infoMap;

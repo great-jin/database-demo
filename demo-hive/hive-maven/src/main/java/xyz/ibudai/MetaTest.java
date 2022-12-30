@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MetaTest {
 
-    private final String dbName = "a_db";
+    private final String schema = "a_db";
     private final String tableName = "tb_test3";
 
     private HiveMetaStoreClient client;
@@ -27,15 +27,15 @@ public class MetaTest {
     @Test
     public void demo1() throws Exception {
         // 获取数据库信息
-        Database database = client.getDatabase(dbName);
+        Database database = client.getDatabase(schema);
         System.out.println("Database: " + database);
 
         // 获取获取所有表
-        List<String> tablesList = client.getAllTables(dbName);
+        List<String> tablesList = client.getAllTables(schema);
         System.out.println("Tables: " + tablesList);
 
         // 获取表信息
-        Table table = client.getTable(dbName, tableName);
+        Table table = client.getTable(schema, tableName);
         System.out.println("Parameters: " + table.getParameters());
 
         // 获取表字段
@@ -59,13 +59,13 @@ public class MetaTest {
     @Test
     public void demo2() throws Exception {
         // 统计所有分区数据
-        List<Partition> result = client.listPartitions(dbName, tableName, (short) -1);
+        List<Partition> result = client.listPartitions(schema, tableName, (short) -1);
         System.out.println("All partition: " + result);
 
         // 统计指定分区数据
         List<String> partition = new ArrayList<>();
         partition.add("year=2022/month=11");
-        List<Partition> result1 = client.getPartitionsByNames(dbName, tableName, partition);
+        List<Partition> result1 = client.getPartitionsByNames(schema, tableName, partition);
         System.out.println("Specify partition: " + result1);
     }
 }

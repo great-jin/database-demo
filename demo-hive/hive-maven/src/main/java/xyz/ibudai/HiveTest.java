@@ -10,8 +10,8 @@ import java.util.List;
 
 public class HiveTest {
 
-    private final String databaseName = "a_db";
-    private final String tableName = "tb_test";
+    private final String schema = "a_db";
+    private final String tableName = "tb_test3";
 
     /**
      * 获取所有 Schema
@@ -32,8 +32,18 @@ public class HiveTest {
     @Test
     public void demo2() {
         try (Connection conn = HiveConfig.getHiveConnection()) {
-            List<String> tables = HiveUtils.getTablesBySchema(conn, databaseName);
+            List<String> tables = HiveUtils.getTablesBySchema(conn, schema);
             System.out.println(tables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void demo3() {
+        try (Connection conn = HiveConfig.getHiveConnection()) {
+            List<List<String>> partitionValues = HiveUtils.getPartitionValues(conn, schema, tableName);
+            System.out.println(partitionValues);
         } catch (Exception e) {
             e.printStackTrace();
         }
