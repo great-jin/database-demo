@@ -19,15 +19,13 @@ public class StatisticsTest {
      */
     @Test
     public void analyzeDemo() {
-        String analyzeSql = "";
         try (
                 Connection conn = HiveConfig.getHiveConnection();
                 Statement stmt = conn.createStatement()
         ) {
-            analyzeSql = HiveUtils.getStatisticsSQL(conn, schema, tableName);
+            String analyzeSql = HiveUtils.getStatisticsSQL(conn, schema, tableName);
             stmt.execute(analyzeSql);
         } catch (Exception e) {
-            System.out.println("执行 Hive 分析命令失败, 命令：【" + analyzeSql + "】.");
             e.printStackTrace();
         }
     }

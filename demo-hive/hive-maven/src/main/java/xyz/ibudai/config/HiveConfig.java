@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 
 public class HiveConfig {
 
-    private final static String URL = "jdbc:hive2://192.168.173.43:10000/a_db";
+    private final static String URL = "jdbc:hive2://192.168.173.43:10000/a_db?connectTimeout=60000?socketTimeout=60000";
     private final static String DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";
 
     /**
