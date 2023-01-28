@@ -1,18 +1,18 @@
 package xyz.ibudai;
 
+import com.mysql.cj.NativeSession;
 import org.junit.Before;
 import org.junit.Test;
 import xyz.ibudai.model.JDBCProperty;
 import xyz.ibudai.utils.BasicPoolUtil;
+import xyz.ibudai.utils.DruidPoolUtil;
 
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class PoolTest {
@@ -28,7 +28,7 @@ public class PoolTest {
         ) {
             prop.load(inReader);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         jdbcProp.setDriver(prop.getProperty("jdbc.driver"));
         jdbcProp.setUrl(prop.getProperty("jdbc.url"));
@@ -39,24 +39,40 @@ public class PoolTest {
 
     @Test
     public void demo() {
-        String sql = "select * from tb_user";
-        Map<String, Object> map = new LinkedHashMap<>();
+        String sql = "select * from tb_test";
         List<Map<String, Object>> list = new ArrayList<>();
 
         DataSource dataSource = BasicPoolUtil.buildDatasource(jdbcProp);
-        try (Connection con = dataSource.getConnection()) {
-            Statement stmt = con.createStatement();
-            stmt.executeQuery(sql);
-            ResultSet result = stmt.getResultSet();
-            while (result.next()) {
-                for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
-                    map.put(result.getMetaData().getColumnName(i), result.getString(i));
+        try (
+                Connection con = dataSource.getConnection();
+                Statement stmt = con.createStatement()
+        ) {
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                Map<String, Object> rowsMap = new LinkedHashMap<>();
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    rowsMap.put(metaData.getColumnName(i), rs.getString(i));
                 }
-                list.add(map);
+                list.add(rowsMap);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         System.out.println(list);
+    }
+
+    @Test
+    public void demo1() {
+        String sql = "select sleep(30)";
+        DataSource dataSource = DruidPoolUtil.buildDatasource(jdbcProp);
+        try (
+                Connection con = dataSource.getConnection();
+                Statement stmt = con.createStatement()
+        ) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
