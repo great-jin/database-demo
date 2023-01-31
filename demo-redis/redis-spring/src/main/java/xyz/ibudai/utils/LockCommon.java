@@ -1,4 +1,4 @@
-package xyz.ibudai.config;
+package xyz.ibudai.utils;
 
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
