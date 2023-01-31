@@ -1,4 +1,4 @@
-package xyz.ibudai.controller.channel;
+package xyz.ibudai.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("channel")
-public class SendTest {
+public class ChannelController {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping("/send")
     public void publish(@RequestParam String message) {

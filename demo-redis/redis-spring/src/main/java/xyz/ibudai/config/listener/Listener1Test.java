@@ -1,4 +1,4 @@
-package xyz.ibudai.controller.channel;
+package xyz.ibudai.config.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,6 @@ public class Listener1Test implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        logger.info("订阅者-2号,接收到消息：" + new String(message.getBody()));
+        logger.info("订阅者-1号, 接收到消息：" + new String(message.getBody()));
     }
 }

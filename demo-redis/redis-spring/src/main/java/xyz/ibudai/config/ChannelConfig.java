@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import xyz.ibudai.controller.channel.Listener1Test;
-import xyz.ibudai.controller.channel.ListenerTest;
+import xyz.ibudai.config.listener.Listener2Test;
+import xyz.ibudai.config.listener.Listener1Test;
 
 @Configuration
 public class ChannelConfig {
@@ -19,19 +19,19 @@ public class ChannelConfig {
     private LettuceConnectionFactory connectionFactory;
 
     /**
-     * 创建监听器/订阅者 1号
-     */
-    @Bean
-    public ListenerTest listenerTest() {
-        return new ListenerTest();
-    }
-
-    /**
-     * 创建监听器/订阅者 2号
+     * 创建监听器 - 订阅者 1号
      */
     @Bean
     public Listener1Test listener1Test() {
         return new Listener1Test();
+    }
+
+    /**
+     * 创建监听器 - 订阅者 2号
+     */
+    @Bean
+    public Listener2Test listener2Test() {
+        return new Listener2Test();
     }
 
     /**
@@ -51,9 +51,9 @@ public class ChannelConfig {
         // 注入连接工厂
         container.setConnectionFactory(connectionFactory);
         // 频道绑定监听器 1 号
-        container.addMessageListener(listenerTest(), channelCore());
-        // 频道绑定监听器 2 号
         container.addMessageListener(listener1Test(), channelCore());
+        // 频道绑定监听器 2 号
+        container.addMessageListener(listener2Test(), channelCore());
         return container;
     }
 }

@@ -1,4 +1,4 @@
-package xyz.ibudai.utils;
+package xyz.ibudai.service;
 
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

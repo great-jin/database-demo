@@ -9,7 +9,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/redis")
-public class CRUDController {
+public class StoreController {
 
     @Autowired
     private RedisUtils redisUtils;
@@ -31,7 +31,7 @@ public class CRUDController {
         user = (User) redisUtils.get(Id);
         if (user == null) {
             user = new User(123, "Alex", "123", new Date());
-            // 将查出来的数据存入Redis数据库
+            // 将查出来的数据存入 Redis
             redisUtils.set(Id, user, 5);
         }
         return user;
