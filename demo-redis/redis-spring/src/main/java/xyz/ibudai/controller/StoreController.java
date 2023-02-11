@@ -6,6 +6,7 @@ import xyz.ibudai.bean.User;
 import xyz.ibudai.utils.RedisUtils;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/redis")
@@ -18,8 +19,8 @@ public class StoreController {
      * 添加数据到 Redis
      */
     @PostMapping("/add")
-    public boolean add(@RequestBody User user) {
-        return redisUtils.set(String.valueOf(user.getId()), user);
+    public void add(@RequestBody User user) {
+        redisUtils.set(String.valueOf(user.getId()), user);
     }
 
     /**
@@ -32,7 +33,7 @@ public class StoreController {
         if (user == null) {
             user = new User(123, "Alex", "123", new Date());
             // 将查出来的数据存入 Redis
-            redisUtils.set(Id, user, 5);
+            redisUtils.setWithTime(Id, user, 5, TimeUnit.MINUTES);
         }
         return user;
     }

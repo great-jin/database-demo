@@ -19,98 +19,150 @@ public class RedisUtils {
      *
      * @param key 键
      */
-    public boolean hasKey(String key) {
+    public Boolean hasKey(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key can not be null!");
+        }
+
         try {
             return redisTemplate.hasKey(key);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 普通缓存放入, 默认无限期
-     *
-     * @param key   键
-     * @param value 值
-     */
-    public boolean set(String key, Object value) {
-        try {
-            redisTemplate.opsForValue().set(key, value);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 普通缓存放入并设置时间
-     *
-     * @param key   键
-     * @param value 值
-     * @param time  时间(秒) time 要大于 0 如果 time 小于等于 0 将设置无限期
-     */
-    public boolean set(String key, Object value, long time) {
-        try {
-            if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.HOURS);
-            } else {
-                set(key, value);
-            }
-            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * 普通缓存获取
+     * 获取 key 过期时间
+     *
+     * @param key 键
+     * @return 时间, 0代表为永久有效
+     */
+    public Long getExpire(String key, TimeUnit timeUnit) {
+        if (key == null) {
+            throw new IllegalArgumentException("key can not be null!");
+        }
+
+        Long expireTime = -1L;
+        if (hasKey(key)) {
+            expireTime = redisTemplate.getExpire(key, timeUnit);
+        }
+        return expireTime;
+    }
+
+    /**
+     * 设置 key 过期时间
+     *
+     * @param key 键
+     * @return 时间, 0代表为永久有效
+     */
+    public Boolean setExpire(String key, long time, TimeUnit timeUnit) {
+        Boolean flag;
+        try {
+            if (hasKey(key)) {
+                flag = redisTemplate.expire(key, time, timeUnit);
+            } else {
+                throw new RuntimeException("The key doesn't exist.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return flag;
+    }
+
+    /**
+     * 缓存放入, 默认无限期
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public void set(String key, Object value) {
+        try {
+            redisTemplate.opsForValue().set(key, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 缓存放入并设置过期时间
+     *
+     * @param key   键
+     * @param value 值
+     * @param time  时间, 0 将设置无限期
+     */
+    public void setWithTime(String key, Object value, long time, TimeUnit timeUnit) {
+        try {
+            if (time <= 0) {
+                set(key, value);
+            } else {
+                redisTemplate.opsForValue().set(key, value, time, timeUnit);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 缓存获取
      *
      * @param key 键
      * @return 值
      */
     public Object get(String key) {
-        return key == null ? null : redisTemplate.opsForValue().get(key);
+        if (key == null) {
+            throw new IllegalArgumentException("key can not be null!");
+        }
+
+        Object object = null;
+        if (hasKey(key)) {
+            object = redisTemplate.opsForValue().get(key);
+        }
+        return object;
     }
 
     /**
      * 删除数据
      *
-     * @param key
+     * @param key 键
      */
-    @SuppressWarnings("unchecked")
-    public void delete(String key) {
-        if (key != null) {
-            redisTemplate.delete(key);
+    public Boolean delete(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key can not be null!");
         }
+
+        Boolean flag = false;
+        if (hasKey(key)) {
+            flag = redisTemplate.delete(key);
+        }
+        return flag;
     }
 
     /**
      * 批量删除缓存
      *
-     * @param key 可以传一个值 或多个
+     * @param keys 可以传一个值或多个
      */
-    @SuppressWarnings("unchecked")
-    public void batchRemove(String... key) {
-        if (key != null && key.length > 0) {
-            if (key.length == 1) {
-                redisTemplate.delete(key[0]);
-            } else {
-                redisTemplate.delete((Collection<String>) CollectionUtils.arrayToList(key));
-            }
+    public void batchRemove(String... keys) {
+        if (keys == null || keys.length <= 0) {
+            throw new IllegalArgumentException("keys can not be null!");
+        }
+        if (keys.length == 1) {
+            redisTemplate.delete(keys[0]);
+        } else {
+            redisTemplate.delete((Collection<String>) CollectionUtils.arrayToList(keys));
         }
     }
 
     /**
-     * 批量删除缓存
+     * 读取集合批量删除
      *
      * @param keys 可以传一个值 或多个
      */
-    @SuppressWarnings("unchecked")
     public void batchDelete(Collection keys) {
         if (!CollectionUtils.isEmpty(keys)) {
             redisTemplate.delete(keys);
+        } else {
+            throw new IllegalArgumentException("keys can not be null!");
         }
     }
 }
