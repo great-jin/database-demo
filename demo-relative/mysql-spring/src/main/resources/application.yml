@@ -1,9 +1,10 @@
 server:
   port: 9090
 
-
 spring:
   datasource:
+    # oracle: oracle.jdbc.driver.OracleDriver
+    # postgres: org.postgresql.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://10.231.6.65:3306/test_db?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
