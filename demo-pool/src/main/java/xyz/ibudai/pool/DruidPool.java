@@ -1,13 +1,12 @@
-package xyz.ibudai.utils;
+package xyz.ibudai.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import xyz.ibudai.model.JDBCProperty;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.Properties;
 
-public class DruidPoolUtil {
+public class DruidPool {
 
     public static DataSource buildDatasource(JDBCProperty property) {
         DruidDataSource dataSource = new DruidDataSource();
