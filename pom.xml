@@ -17,8 +17,7 @@
         <module>a-template</module>
         <module>demo-cdc</module>
         <module>demo-pool</module>
-        <module>demo-mysql</module>
-        <module>demo-oracle</module>
+        <module>demo-relative</module>
         <module>demo-metadata</module>
         <module>demo-mongo</module>
         <module>demo-postgres</module>

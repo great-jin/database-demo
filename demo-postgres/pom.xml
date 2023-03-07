@@ -14,6 +14,5 @@
 
     <modules>
         <module>postgres-maven</module>
-        <module>postgres-spring</module>
     </modules>
 </project>
