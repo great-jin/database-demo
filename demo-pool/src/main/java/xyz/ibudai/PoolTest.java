@@ -1,11 +1,10 @@
 package xyz.ibudai;
 
-import com.mysql.cj.NativeSession;
 import org.junit.Before;
 import org.junit.Test;
 import xyz.ibudai.model.JDBCProperty;
-import xyz.ibudai.utils.BasicPoolUtil;
-import xyz.ibudai.utils.DruidPoolUtil;
+import xyz.ibudai.pool.BasicPool;
+import xyz.ibudai.pool.DruidPool;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class PoolTest {
         String sql = "select * from tb_test";
         List<Map<String, Object>> list = new ArrayList<>();
 
-        DataSource dataSource = BasicPoolUtil.buildDatasource(jdbcProp);
+        DataSource dataSource = BasicPool.buildDatasource(jdbcProp);
         try (
                 Connection con = dataSource.getConnection();
                 Statement stmt = con.createStatement()
@@ -65,7 +64,7 @@ public class PoolTest {
     @Test
     public void demo1() {
         String sql = "select sleep(30)";
-        DataSource dataSource = DruidPoolUtil.buildDatasource(jdbcProp);
+        DataSource dataSource = DruidPool.buildDatasource(jdbcProp);
         try (
                 Connection con = dataSource.getConnection();
                 Statement stmt = con.createStatement()
