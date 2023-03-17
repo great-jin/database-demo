@@ -21,6 +21,8 @@ spring:
     host: 10.231.6.65
     port: 6379
     password: 123456
+    # 数据库，默认 0
+    database: 0
     timeout: 1800000
     lettuce:
       pool:
