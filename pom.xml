@@ -18,7 +18,6 @@
         <module>demo-cdc</module>
         <module>demo-pool</module>
         <module>demo-relative</module>
-        <module>demo-metadata</module>
         <module>demo-mongo</module>
         <module>demo-postgres</module>
         <module>demo-redis</module>

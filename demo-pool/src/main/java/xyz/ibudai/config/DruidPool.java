@@ -1,20 +1,31 @@
-package xyz.ibudai.pool;
+package xyz.ibudai.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import xyz.ibudai.model.JDBCProperty;
+import xyz.ibudai.common.DbType;
+import xyz.ibudai.utils.DriverUtil;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
+/**
+ * The type Druid pool.
+ */
 public class DruidPool {
 
-    public static DataSource buildDatasource(JDBCProperty property) {
+    /**
+     * Build datasource data source.
+     *
+     * @param dbType the db type
+     * @return the data source
+     */
+    public static DataSource buildDatasource(DbType dbType) {
+        String[] dbcpInfo = DriverUtil.buildDbInfo(dbType);
         DruidDataSource dataSource = new DruidDataSource();
         // 基本连接信息
-        dataSource.setDriverClassName(property.getDriver());
-        dataSource.setUrl(property.getUrl());
-        dataSource.setUsername(property.getUser());
-        dataSource.setPassword(property.getPassword());
+        dataSource.setUrl(dbcpInfo[0]);
+        dataSource.setUsername(dbcpInfo[1]);
+        dataSource.setPassword(dbcpInfo[2]);
+        dataSource.setDriverClassName(dbcpInfo[3]);
         // 初始化连接池大小
         dataSource.setInitialSize(10);
         // 连接池的最大数据库连接数, 为 0 表示无限制
