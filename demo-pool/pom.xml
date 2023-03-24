@@ -12,13 +12,27 @@
     <artifactId>demo-pool</artifactId>
 
     <properties>
+        <mysql.version>8.0.31</mysql.version>
+        <oracle.version>11.2.0.4</oracle.version>
         <druid.version>1.2.15</druid.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <mysql.version>8.0.31</mysql.version>
+        <ddlutils.version>1.0</ddlutils.version>
+        <calcite.version>1.33.0</calcite.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>${oracle.version}</version>
+        </dependency>
+        <!-- Datasource -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -29,11 +43,19 @@
             <artifactId>commons-dbcp</artifactId>
             <version>${commons-dbcp.version}</version>
         </dependency>
+        <!-- ddlutils -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.apache.ddlutils</groupId>
+            <artifactId>ddlutils</artifactId>
+            <version>${ddlutils.version}</version>
         </dependency>
+        <!-- calcite -->
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-core</artifactId>
+            <version>${calcite.version}</version>
+        </dependency>
+        <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
