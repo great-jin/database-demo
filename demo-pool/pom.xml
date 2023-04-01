@@ -55,6 +55,12 @@
             <artifactId>calcite-core</artifactId>
             <version>${calcite.version}</version>
         </dependency>
+        <!-- hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.1.7.Final</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>

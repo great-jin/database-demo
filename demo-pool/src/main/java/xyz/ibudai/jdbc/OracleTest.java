@@ -1,6 +1,8 @@
 package xyz.ibudai.jdbc;
 
 import com.mysql.cj.util.StringUtils;
+import oracle.jdbc.OracleDatabaseMetaData;
+import org.hibernate.dialect.OracleDialect;
 import org.junit.Test;
 import xyz.ibudai.common.DbType;
 import xyz.ibudai.config.BasicPool;
@@ -111,5 +113,25 @@ public class OracleTest {
             }
         }
         System.out.println(tableMap);
+    }
+    public static void main(String[] args) {
+        String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+        String username = "username";
+        String password = "password";
+        String tableName = "employee";
+        String schemaName = null;
+        String[] types = { "TABLE" };
+        OracleDialect dialect = new OracleDialect();
+
+        try (Connection conn = DriverManager.getConnection(url, username, password)) {
+            DatabaseMetaData metaData = new OracleDatabaseMetaData(conn);
+            ResultSet rs = metaData.getTables(null, schemaName, tableName, types);
+            while (rs.next()) {
+                String name = rs.getString("TABLE_NAME");
+                System.out.println("Table: " + name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
