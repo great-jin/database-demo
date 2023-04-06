@@ -2,8 +2,8 @@
 server:
   port: 9090
 
-# Minio???
+# Minio数据库
 minio:
-  endpoint: http://10.231.6.65:9000
+  endpoint: http://192.168.0.20:9000
   accessKey: minioadmin
   secretKey: minioadmin

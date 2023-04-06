@@ -1,8 +1,10 @@
 package xyz.ibudai.utils;
 
 import io.minio.*;
+
 import java.util.*;
 import java.io.InputStream;
+
 import io.minio.messages.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class MinioUtil {
     /**
      * 判断 bucket 是否存在
      *
-     * @param bucketName
+     * @param bucketName bucket名称
      */
     public boolean bucketExist(String bucketName) throws Exception {
         return client.bucketExists(BucketExistsArgs.builder()
@@ -29,9 +31,18 @@ public class MinioUtil {
     }
 
     /**
+     * 获取全部 bucket
+     *
+     * @return
+     */
+    public List<Bucket> getAllBuckets() throws Exception {
+        return client.listBuckets();
+    }
+
+    /**
      * 创建 bucket
      *
-     * @param bucketName
+     * @param bucketName bucket名称
      */
     public void createBucket(String bucketName) throws Exception {
         if (!bucketExist(bucketName)) {
@@ -44,7 +55,7 @@ public class MinioUtil {
     /**
      * 删除 bucket
      *
-     * @param bucketName
+     * @param bucketName bucket名称
      */
     public void removeBucket(String bucketName) throws Exception {
         if (bucketExist(bucketName)) {
@@ -66,16 +77,10 @@ public class MinioUtil {
     }
 
     /**
-     * 获取全部 bucket
+     * MultipartFile 格式上传文件
      *
-     * @return
-     */
-    public List<Bucket> getAllBuckets() throws Exception {
-        return client.listBuckets();
-    }
-
-    /**
-     * 上传文件
+     * @param file       文件
+     * @param bucketName bucket名称
      */
     public MinioRespond uploadFile(MultipartFile file, String bucketName) throws Exception {
         // 拼接文件名： <UUID>_<FileName>.Suffix
@@ -93,45 +98,30 @@ public class MinioUtil {
                         .object(fileName.toString())
                         .stream(file.getInputStream(), file.getSize(), -1)
                         .build());
-
-        MinioRespond respond = new MinioRespond(originName,
-                fileName.toString(), objectWriteResponse);
-        return respond;
+        return new MinioRespond(originName, fileName.toString(), objectWriteResponse);
     }
 
     /**
-     * 获取⽂件
-     *
-     * @param bucketName bucket名称
-     * @param objectName ⽂件名称
-     * @return ⼆进制流
-     */
-    public InputStream getObject(String bucketName, String objectName) throws Exception {
-        return client.getObject(GetObjectArgs.builder()
-                .bucket(bucketName)
-                .object(objectName)
-                .build());
-    }
-
-    /**
-     * 上传⽂件
+     * IO 格式上传⽂件
      *
      * @param bucketName bucket名称
      * @param objectName ⽂件名称
      * @param stream     ⽂件流
      */
-    public void putObject(String bucketName, String objectName, InputStream stream) throws
-            Exception {
-        client.putObject(PutObjectArgs.builder()
+    public MinioRespond putObject(String bucketName, String objectName, InputStream stream) throws Exception {
+        String originName = "";
+        // 上传文件
+        ObjectWriteResponse objectWriteResponse = client.putObject(PutObjectArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
                 .stream(stream, stream.available(), -1)
                 .contentType(objectName.substring(objectName.lastIndexOf(".")))
                 .build());
+        return new MinioRespond(originName, objectName, objectWriteResponse);
     }
 
     /**
-     * 上传⽂件
+     * IO 格式上传⽂件, 指定文件类型
      *
      * @param bucketName  bucket名称
      * @param objectName  ⽂件名称
@@ -139,13 +129,25 @@ public class MinioUtil {
      * @param size        ⼤⼩
      * @param contextType 类型
      */
-    public void putObject(String bucketName, String objectName, InputStream stream, long
-            size, String contextType) throws Exception {
+    public void putObject(String bucketName, String objectName, InputStream stream, long size, String contextType) throws Exception {
         client.putObject(PutObjectArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
                 .stream(stream, size, -1)
                 .contentType(contextType)
+                .build());
+    }
+
+    /**
+     * 获取⽂件
+     *
+     * @param bucketName bucket名称
+     * @param objectName ⽂件名称
+     */
+    public InputStream getObject(String bucketName, String objectName) throws Exception {
+        return client.getObject(GetObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
                 .build());
     }
 
@@ -181,7 +183,6 @@ public class MinioUtil {
      * @param bucketName bucket名称
      * @param objectName ⽂件名称
      * @param expires    过期时间 <=7
-     * @return url
      */
     public String getObjectURL(String bucketName, String objectName, Integer expires) throws Exception {
         return client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
