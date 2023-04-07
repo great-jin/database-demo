@@ -8,6 +8,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.client.*;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class MyTest {
     private RestHighLevelClient client;
 
     @Before
-    public void initRestClient() {
+    public void init() {
         // 创建连接用户信息
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
@@ -43,8 +44,19 @@ public class MyTest {
         client = new RestHighLevelClient(builder);
     }
 
+    @After
+    public void destroy() throws IOException {
+        client.close();
+    }
+
     @Test
-    public void demo() {
+    public void testConnect() throws IOException {
+        boolean ping = client.ping(RequestOptions.DEFAULT);
+        System.out.println(ping);
+    }
+
+    @Test
+    public void listIndex() {
         try {
             GetAliasesRequest request = new GetAliasesRequest();
             GetAliasesResponse getAliasesResponse = client.indices().getAlias(request, RequestOptions.DEFAULT);
