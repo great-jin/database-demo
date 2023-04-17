@@ -1,14 +1,12 @@
-package xyz.ibudai.jdbc;
+package xyz.ibudai.metadata;
 
 import com.mysql.cj.util.StringUtils;
-import oracle.jdbc.OracleDatabaseMetaData;
-import org.hibernate.dialect.OracleDialect;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.common.DbType;
+import xyz.ibudai.consts.DbType;
 import xyz.ibudai.config.BasicPool;
-import xyz.ibudai.config.ConnectionUtils;
+import xyz.ibudai.config.ConnUtils;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
@@ -24,7 +22,7 @@ public class OracleTest {
     @Test
     public void SchemaDemo() {
         List<String> schemaList = new ArrayList<>();
-        try (Connection connection = ConnectionUtils.getConnection(DbType.ORACLE)) {
+        try (Connection connection = ConnUtils.getConnection(DbType.ORACLE)) {
             try {
                 DatabaseMetaData metaData = connection.getMetaData();
                 ResultSet rs = metaData.getSchemas();
@@ -45,7 +43,7 @@ public class OracleTest {
      */
     @Test
     public void TableDemo() {
-        DataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
+        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
             ResultSet rs = metaData.getTables(null, schemaName, null, queryType);
@@ -73,7 +71,7 @@ public class OracleTest {
      */
     @Test
     public void columnsInfo() {
-        try (Connection connection = ConnectionUtils.getConnection(DbType.ORACLE)) {
+        try (Connection connection = ConnUtils.getConnection(DbType.ORACLE)) {
             // 获取主键列表
             List<String> primaryKeyList = new ArrayList<>();
             DatabaseMetaData metaData = connection.getMetaData();
@@ -103,26 +101,6 @@ public class OracleTest {
             }
             System.out.println(tableFieldList);
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static void main(String[] args) {
-        String url = "jdbc:oracle:thin:@localhost:1521:orcl";
-        String username = "username";
-        String password = "password";
-        String tableName = "employee";
-        String schemaName = null;
-        String[] types = { "TABLE" };
-        OracleDialect dialect = new OracleDialect();
-
-        try (Connection conn = DriverManager.getConnection(url, username, password)) {
-            DatabaseMetaData metaData = new OracleDatabaseMetaData(conn);
-            ResultSet rs = metaData.getTables(null, schemaName, tableName, types);
-            while (rs.next()) {
-                String name = rs.getString("TABLE_NAME");
-                System.out.println("Table: " + name);
-            }
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

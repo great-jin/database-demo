@@ -1,6 +1,6 @@
-package xyz.ibudai.common;
+package xyz.ibudai.consts;
 
-public class JDBCInfo {
+public class DbConst {
 
     /**
      * MySQLs connection info

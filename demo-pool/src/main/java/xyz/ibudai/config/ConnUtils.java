@@ -1,6 +1,6 @@
 package xyz.ibudai.config;
 
-import xyz.ibudai.common.DbType;
+import xyz.ibudai.consts.DbType;
 import xyz.ibudai.utils.DriverUtil;
 
 import java.sql.Connection;
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * The type Datasource utils.
  */
-public class ConnectionUtils {
+public class ConnUtils {
 
     /**
      * Gets connection.
