@@ -1,10 +1,9 @@
 package xyz.ibudai.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import xyz.ibudai.common.DbType;
+import xyz.ibudai.consts.DbType;
 import xyz.ibudai.utils.DriverUtil;
 
-import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
@@ -18,7 +17,7 @@ public class DruidPool {
      * @param dbType the db type
      * @return the data source
      */
-    public static DataSource buildDatasource(DbType dbType) {
+    public static DruidDataSource buildDatasource(DbType dbType) {
         String[] dbcpInfo = DriverUtil.buildDbInfo(dbType);
         DruidDataSource dataSource = new DruidDataSource();
         // 基本连接信息

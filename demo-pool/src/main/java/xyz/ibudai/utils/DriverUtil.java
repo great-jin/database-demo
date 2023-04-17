@@ -1,7 +1,7 @@
 package xyz.ibudai.utils;
 
-import xyz.ibudai.common.DbType;
-import xyz.ibudai.common.JDBCInfo;
+import xyz.ibudai.consts.DbType;
+import xyz.ibudai.consts.DbConst;
 
 import java.io.File;
 import java.net.URL;
@@ -24,25 +24,25 @@ public class DriverUtil {
         String[] dbcpInfo = new String[5];
         switch (dbType) {
             case MYSQL:
-                dbcpInfo[0] = JDBCInfo.MYSQL_URL;
-                dbcpInfo[1] = JDBCInfo.MYSQL_USERNAME;
-                dbcpInfo[2] = JDBCInfo.MYSQL_PASSWORD;
-                dbcpInfo[3] = JDBCInfo.MYSQL_DRIVER_1;
-                dbcpInfo[4] = JDBCInfo.MYSQL_PATH;
+                dbcpInfo[0] = DbConst.MYSQL_URL;
+                dbcpInfo[1] = DbConst.MYSQL_USERNAME;
+                dbcpInfo[2] = DbConst.MYSQL_PASSWORD;
+                dbcpInfo[3] = DbConst.MYSQL_DRIVER_1;
+                dbcpInfo[4] = DbConst.MYSQL_PATH;
                 break;
             case ORACLE:
-                dbcpInfo[0] = JDBCInfo.ORACLE_URL;
-                dbcpInfo[1] = JDBCInfo.ORACLE_USERNAME;
-                dbcpInfo[2] = JDBCInfo.ORACLE_PASSWORD;
-                dbcpInfo[3] = JDBCInfo.ORACLE_DRIVER;
-                dbcpInfo[4] = JDBCInfo.ORACLE_PATH_1;
+                dbcpInfo[0] = DbConst.ORACLE_URL;
+                dbcpInfo[1] = DbConst.ORACLE_USERNAME;
+                dbcpInfo[2] = DbConst.ORACLE_PASSWORD;
+                dbcpInfo[3] = DbConst.ORACLE_DRIVER;
+                dbcpInfo[4] = DbConst.ORACLE_PATH_1;
                 break;
             case HIVE:
-                dbcpInfo[0] = JDBCInfo.HIVE_URL;
-                dbcpInfo[1] = JDBCInfo.HIVE_USERNAME;
-                dbcpInfo[2] = JDBCInfo.HIVE_PASSWORD;
-                dbcpInfo[3] = JDBCInfo.HIVE_DRIVER;
-                dbcpInfo[4] = JDBCInfo.HIVE_PATH;
+                dbcpInfo[0] = DbConst.HIVE_URL;
+                dbcpInfo[1] = DbConst.HIVE_USERNAME;
+                dbcpInfo[2] = DbConst.HIVE_PASSWORD;
+                dbcpInfo[3] = DbConst.HIVE_DRIVER;
+                dbcpInfo[4] = DbConst.HIVE_PATH;
                 break;
         }
         return dbcpInfo;

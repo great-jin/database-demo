@@ -1,10 +1,10 @@
-package xyz.ibudai.jdbc;
+package xyz.ibudai.metadata;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.common.DbType;
+import xyz.ibudai.consts.DbType;
 import xyz.ibudai.config.BasicPool;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -27,7 +27,7 @@ public class MySQLTest {
      */
     @Test
     public void tableInfoDemo() {
-        DataSource dataSource = BasicPool.buildDatasource(DbType.MYSQL);
+        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.MYSQL);
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData dbMetaData = conn.getMetaData();
             ResultSet rs = dbMetaData.getTables(schemaName, null, null, queryType);
