@@ -1,5 +1,5 @@
 package xyz.ibudai;
 
-public class MySQLCDCTest {
+public class CaptureTest {
     
 }
