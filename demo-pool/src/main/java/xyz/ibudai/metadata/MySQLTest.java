@@ -1,8 +1,8 @@
 package xyz.ibudai.metadata;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
 
 import java.sql.Connection;

@@ -1,9 +1,12 @@
 package xyz.ibudai;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.DbDriverEntity;
+import xyz.ibudai.model.DbEntity;
+import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
+import xyz.ibudai.utils.DriverUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +14,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class PoolTest {
 
@@ -31,9 +33,16 @@ public class PoolTest {
 
     @Test
     public void demo1() {
-        String sql = "select sleep(1)";
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.MYSQL);
-        for (int i = 0; i < 6; i++) {
+        DbEntity dbEntity = DriverUtil.buildDbInfo(DbType.ORACLE);
+        DbDriverEntity driverEntity = DriverUtil.getDriverEntity(dbEntity);
+        System.out.println(driverEntity);
+    }
+
+    @Test
+    public void demo2() {
+        String sql = "select 'a' as name from dual";
+        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
+        for (int i = 0; i < 1; i++) {
             try (
                     Connection con = dataSource.getConnection();
                     Statement stmt = con.createStatement()
@@ -43,25 +52,5 @@ public class PoolTest {
                 ex.printStackTrace();
             }
         }
-        System.out.println("Num Idle: " + dataSource.getNumIdle());
-        System.out.println("Num Active: " + dataSource.getNumActive());
-    }
-
-    @Test
-    public void demo2() throws Exception {
-        String sql = "select sleep(1)";
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.MYSQL);
-        Connection conn = null;
-        try {
-            conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        System.out.println("Num Idle: " + dataSource.getNumIdle());
-        System.out.println("Num Active: " + dataSource.getNumActive());
-        TimeUnit.SECONDS.sleep(15);
-        System.out.println("Is closed: " + conn.isClosed());
     }
 }

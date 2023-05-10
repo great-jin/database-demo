@@ -1,6 +1,7 @@
 package xyz.ibudai.config;
 
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.common.DbType;
+import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.utils.DriverUtil;
 
 import java.sql.Connection;
@@ -19,10 +20,10 @@ public class ConnUtils {
      * @return the connection
      */
     public static Connection getConnection(DbType dbType) {
-        String[] info = DriverUtil.buildDbInfo(dbType);
-        String url = info[0];
-        String userName = info[1];
-        String password = info[2];
+        DbEntity dbEntity = DriverUtil.buildDbInfo(dbType);
+        String url = dbEntity.getUrl();
+        String userName = dbEntity.getUser();
+        String password = dbEntity.getPassword();
         try {
             return DriverManager.getConnection(url, userName, password);
         } catch (SQLException e) {

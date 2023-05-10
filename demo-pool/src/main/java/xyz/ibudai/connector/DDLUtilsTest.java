@@ -1,12 +1,12 @@
 package xyz.ibudai.connector;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.junit.Test;
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
 
 import java.sql.Connection;
