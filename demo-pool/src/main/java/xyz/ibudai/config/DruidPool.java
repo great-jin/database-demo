@@ -1,7 +1,8 @@
 package xyz.ibudai.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.common.DbType;
+import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.utils.DriverUtil;
 
 import java.util.Properties;
@@ -18,13 +19,13 @@ public class DruidPool {
      * @return the data source
      */
     public static DruidDataSource buildDatasource(DbType dbType) {
-        String[] dbcpInfo = DriverUtil.buildDbInfo(dbType);
+        DbEntity dbEntity = DriverUtil.buildDbInfo(dbType);
         DruidDataSource dataSource = new DruidDataSource();
         // 基本连接信息
-        dataSource.setUrl(dbcpInfo[0]);
-        dataSource.setUsername(dbcpInfo[1]);
-        dataSource.setPassword(dbcpInfo[2]);
-        dataSource.setDriverClassName(dbcpInfo[3]);
+        dataSource.setUrl(dbEntity.getUrl());
+        dataSource.setUsername(dbEntity.getUser());
+        dataSource.setPassword(dbEntity.getPassword());
+        dataSource.setDriverClassName(dbEntity.getDriverName());
         // 初始化连接池大小
         dataSource.setInitialSize(10);
         // 连接池的最大数据库连接数, 为 0 表示无限制

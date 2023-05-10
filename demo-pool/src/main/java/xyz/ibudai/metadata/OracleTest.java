@@ -1,9 +1,9 @@
 package xyz.ibudai.metadata;
 
 import com.mysql.cj.util.StringUtils;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.consts.DbType;
+import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
 import xyz.ibudai.config.ConnUtils;
 

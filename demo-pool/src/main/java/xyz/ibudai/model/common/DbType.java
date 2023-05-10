@@ -1,4 +1,4 @@
-package xyz.ibudai.consts;
+package xyz.ibudai.model.common;
 
 public enum DbType {
     MYSQL,
