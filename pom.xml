@@ -22,6 +22,7 @@
         <module>demo-postgres</module>
         <module>demo-redis</module>
         <module>demo-kafka</module>
+        <module>demo-zookeeper</module>
         <module>demo-rabbitmq</module>
         <module>demo-hive</module>
         <module>demo-hbase</module>

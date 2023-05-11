@@ -1,0 +1,8 @@
+server:
+  port: 9090
+
+cluster:
+  node-path: /ibd/cluster
+  zookeeper:
+    ip: 10.231.6.21:2181
+    timeout: 10000
