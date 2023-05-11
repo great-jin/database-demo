@@ -1,0 +1,9 @@
+server:
+  port: 9091
+
+cluster:
+  retry: 3
+  node-name: node1
+  zookeeper:
+    ip: 10.231.6.21:2181
+    timeout: 60000

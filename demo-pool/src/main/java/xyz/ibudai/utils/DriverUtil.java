@@ -175,6 +175,7 @@ public class DriverUtil {
                             return className;
                         }
                         // 判断驱动类是 java.sql.Driver 的子类, 是否为一个抽象类
+                        // c1.isAssignableFrom(c2): 判断 c2 是不是 c1 的子类或接口实现类
                         if (java.sql.Driver.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                             return className;
                         }
