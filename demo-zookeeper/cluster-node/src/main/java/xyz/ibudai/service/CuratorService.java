@@ -1,8 +1,7 @@
-package com.example.service;
+package xyz.ibudai.service;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.CuratorWatcher;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
@@ -15,7 +14,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -25,6 +23,12 @@ public class CuratorService implements ApplicationRunner {
 
     @Value("${server.port}")
     private String port;
+
+    /**
+     * 服务节点名称
+     */
+    @Value("${cluster.node-path}")
+    private String nodePath;
 
     /**
      * 服务节点名称
@@ -56,7 +60,6 @@ public class CuratorService implements ApplicationRunner {
      * CreateMode:
      */
     public String registeredAddress() {
-        String path = "/ibd/cluster";
         try {
             InetAddress localHost = InetAddress.getLocalHost();
             String host = localHost.getHostAddress() + ":" + port;
@@ -67,7 +70,7 @@ public class CuratorService implements ApplicationRunner {
                     // 设置策略, EPHEMERAL: 当会话结束, 节点会被自动删除
                     .withMode(CreateMode.EPHEMERAL)
                     // 注册节点并存入数据, 通过 zkClient.getData().forPath(node) 获取
-                    .forPath(path + "/" + nodeName, host.getBytes());
+                    .forPath(nodePath + "/" + nodeName, host.getBytes());
             logger.info("服务节点 [{}] 已上线.", nodeName);
             monitorNode(fullPath);
         } catch (Exception e) {

@@ -1,10 +1,10 @@
-package com.example;
+package xyz.ibudai;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ClusterCenterApplicationTests {
+class ClusterNodeApplicationTests {
 
     @Test
     void contextLoads() {

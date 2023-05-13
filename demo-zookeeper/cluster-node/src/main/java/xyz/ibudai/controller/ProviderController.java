@@ -1,7 +1,7 @@
-package com.example.controller;
+package xyz.ibudai.controller;
 
-import com.example.service.CuratorService;
-import com.example.service.ProviderService;
+import xyz.ibudai.service.CuratorService;
+import xyz.ibudai.service.ProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

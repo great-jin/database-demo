@@ -1,7 +1,6 @@
-package com.example.service;
+package xyz.ibudai.service;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;

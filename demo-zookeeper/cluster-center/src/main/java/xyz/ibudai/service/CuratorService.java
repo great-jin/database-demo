@@ -1,4 +1,4 @@
-package com.example.service;
+package xyz.ibudai.service;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -62,6 +62,7 @@ public class CuratorService implements ApplicationRunner {
             logger.info("节点变更，当前在线节点: [{}]", nodeList);
         });
         cache.start();
+        logger.info("分发中心启动");
     }
 
     /*public void startMonitoring() {

@@ -1,4 +1,4 @@
-package com.example.service;
+package xyz.ibudai.service;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.factory.DisposableBean;

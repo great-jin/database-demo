@@ -1,16 +1,19 @@
-package com.example.controller;
+package xyz.ibudai.controller;
 
-import com.example.service.CuratorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import xyz.ibudai.service.CuratorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/api/consumer")
+@RequestMapping("/api/center")
 public class ConsumerController {
+
+    private final Logger logger = LoggerFactory.getLogger(CuratorService.class);
 
     @Autowired
     private CuratorService curatorService;
@@ -28,7 +31,9 @@ public class ConsumerController {
         // 轮询策略获取服务地址
         String path = curatorService.roundRobin() + apiPath;
         // 使用 RestTemplate 远程调用服务
-        return restTemplate.getForObject("http://" + path, String.class);
+        String msg = restTemplate.getForObject("http://" + path, String.class);
+        logger.info(msg);
+        return msg;
     }
 }
 

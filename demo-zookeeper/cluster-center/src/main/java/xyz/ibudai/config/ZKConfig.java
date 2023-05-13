@@ -1,4 +1,4 @@
-package com.example.config;
+package xyz.ibudai.config;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
