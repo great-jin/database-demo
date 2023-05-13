@@ -3,7 +3,8 @@ server:
 
 cluster:
   retry: 3
+  node-path: /ibudai/cluster
   node-name: node1
   zookeeper:
-    ip: 10.231.6.21:2181
+    ip: 192.168.0.20:2181
     timeout: 60000

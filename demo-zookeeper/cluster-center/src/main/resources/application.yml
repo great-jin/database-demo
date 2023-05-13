@@ -2,7 +2,7 @@ server:
   port: 9090
 
 cluster:
-  node-path: /ibd/cluster
+  node-path: /ibudai/cluster
   zookeeper:
-    ip: 10.231.6.21:2181
+    ip: 192.168.0.20:2181
     timeout: 10000
