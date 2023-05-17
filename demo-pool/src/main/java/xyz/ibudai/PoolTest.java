@@ -1,5 +1,6 @@
 package xyz.ibudai;
 
+import com.sun.rowset.CachedRowSetImpl;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
 import xyz.ibudai.model.DbDriverEntity;
@@ -8,6 +9,9 @@ import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
 import xyz.ibudai.utils.DriverUtil;
 
+import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.RowSetFactory;
+import javax.sql.rowset.RowSetProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,9 +49,18 @@ public class PoolTest {
         for (int i = 0; i < 1; i++) {
             try (
                     Connection con = dataSource.getConnection();
-                    Statement stmt = con.createStatement()
+                    Statement stmt = con.createStatement();
             ) {
-                stmt.execute(sql);
+                RowSetFactory factory = RowSetProvider.newFactory();
+                try (
+                        ResultSet rs = stmt.executeQuery(sql);
+                        CachedRowSet rowSet = factory.createCachedRowSet();
+                ) {
+                    rowSet.populate(rs);
+                    while (rowSet.next()) {
+                        // do something
+                    }
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
