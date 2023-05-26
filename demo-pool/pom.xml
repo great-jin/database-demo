@@ -12,21 +12,12 @@
     <artifactId>demo-pool</artifactId>
 
     <properties>
-        <mysql.version>8.0.31</mysql.version>
-        <oracle.version>11.2.0.4</oracle.version>
         <druid.version>1.2.15</druid.version>
-        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-        <ddlutils.version>1.0</ddlutils.version>
-        <calcite.version>1.33.0</calcite.version>
+        <dbcp2.version>2.9.0</dbcp2.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-        </dependency>
         <!-- Datasource -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -36,25 +27,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>${commons-dbcp2.version}</version>
+            <version>${dbcp2.version}</version>
         </dependency>
-        <!-- ddlutils -->
+        <!-- Lombok -->
         <dependency>
-            <groupId>org.apache.ddlutils</groupId>
-            <artifactId>ddlutils</artifactId>
-            <version>${ddlutils.version}</version>
-        </dependency>
-        <!-- calcite -->
-        <dependency>
-            <groupId>org.apache.calcite</groupId>
-            <artifactId>calcite-core</artifactId>
-            <version>${calcite.version}</version>
-        </dependency>
-        <!-- hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.1.7.Final</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
         </dependency>
         <!-- Test -->
         <dependency>

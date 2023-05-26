@@ -6,8 +6,10 @@ import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.junit.Test;
+import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
+import xyz.ibudai.utils.LoaderUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,7 +19,8 @@ public class DDLUtilsTest {
     @Test
     public void demo() {
         // Establish a connection to the database
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.MYSQL);
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.MYSQL);
+        BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
         // Use DDLUtils to extract the database model
         // 创建 DdlUtils 数据库平台对象
         Platform platform = PlatformFactory.createNewPlatformInstance(dataSource);
@@ -38,9 +41,11 @@ public class DDLUtilsTest {
     @Test
     public void demo1() {
         String tableName = "tb_test";
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
-
-        try (Connection connection = dataSource.getConnection()) {
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
+        try (
+                BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
+                Connection connection = dataSource.getConnection()
+        ) {
             String driver = "oracle.jdbc.OracleDriver";
             String jdbcUrl = "jdbc:oracle:thin:@//10.231.6.21:1521/helowin";
             Platform platform = PlatformFactory.createNewPlatformInstance(driver, jdbcUrl);

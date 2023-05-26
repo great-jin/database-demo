@@ -1,31 +1,23 @@
 package xyz.ibudai.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.model.DbEntity;
-import xyz.ibudai.utils.DriverUtil;
 
-import java.util.Properties;
-
-/**
- * The type Druid pool.
- */
 public class DruidPool {
 
     /**
      * Build datasource data source.
      *
-     * @param dbType the db type
+     * @param dbEntity the db entity
      * @return the data source
      */
-    public static DruidDataSource buildDatasource(DbType dbType) {
-        DbEntity dbEntity = DriverUtil.buildDbInfo(dbType);
+    public static DruidDataSource buildDatasource(DbEntity dbEntity) {
         DruidDataSource dataSource = new DruidDataSource();
         // 基本连接信息
         dataSource.setUrl(dbEntity.getUrl());
         dataSource.setUsername(dbEntity.getUser());
         dataSource.setPassword(dbEntity.getPassword());
-        dataSource.setDriverClassName(dbEntity.getDriverName());
+        dataSource.setDriverClassName(dbEntity.getDriverClassName());
         // 初始化连接池大小
         dataSource.setInitialSize(10);
         // 连接池的最大数据库连接数, 为 0 表示无限制
@@ -39,11 +31,8 @@ public class DruidPool {
         // 执行超时时间
         dataSource.setQueryTimeout(10 * 60 * 1000);
         dataSource.setValidationQueryTimeout(10 * 60 * 1000);
-
-        Properties connectProps = new Properties();
-        // 空字符串问题
-        connectProps.put("useFetchSizeWithLongColumn", "true");
-        dataSource.setConnectionProperties(connectProps.toString());
+        // 数据库属性配置
+        dataSource.setConnectionProperties(dbEntity.getDatabaseProp().toString());
         return dataSource;
     }
 }
