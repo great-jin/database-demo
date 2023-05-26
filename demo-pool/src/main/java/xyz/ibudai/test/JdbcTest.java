@@ -1,12 +1,11 @@
-package xyz.ibudai;
+package xyz.ibudai.test;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
-import xyz.ibudai.model.DbDriverEntity;
 import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
-import xyz.ibudai.utils.DriverUtil;
+import xyz.ibudai.utils.LoaderUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 
-public class PoolTest {
+public class JdbcTest {
 
     @Test
     public void load() {
@@ -32,25 +31,17 @@ public class PoolTest {
     }
 
     @Test
-    public void demo1() {
-        DbEntity dbEntity = DriverUtil.buildDbInfo(DbType.ORACLE);
-        DbDriverEntity driverEntity = DriverUtil.getDriverEntity(dbEntity);
-        System.out.println(driverEntity);
-    }
-
-    @Test
     public void demo2() {
         String sql = "select 'a' as name from dual";
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
-        for (int i = 0; i < 1; i++) {
-            try (
-                    Connection con = dataSource.getConnection();
-                    Statement stmt = con.createStatement()
-            ) {
-                stmt.execute(sql);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
+        try (
+                BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
+                Connection con = dataSource.getConnection();
+                Statement stmt = con.createStatement()
+        ) {
+            stmt.execute(sql);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

@@ -1,30 +1,40 @@
-package xyz.ibudai.metadata;
+package xyz.ibudai.test;
 
-import com.mysql.cj.util.StringUtils;
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.junit.Before;
 import org.junit.Test;
-import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
+import xyz.ibudai.model.DbEntity;
+import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.ConnUtils;
+import xyz.ibudai.utils.LoaderUtil;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
-public class OracleTest {
+public class MetaTest {
 
     private final String schemaName = "IBUDAI";
     private final String tableName = "TB_121501";
     private final String[] queryType = new String[]{"TABLE", "VIEW"};
 
+    private DataSource dataSource;
+
+    @Before
+    public void init() {
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
+        dataSource = BasicPool.buildDatasource(dbEntity);
+    }
+
     /**
-     * 获取 Schema 名称
+     * Get all schemas
      */
     @Test
     public void SchemaDemo() {
         List<String> schemaList = new ArrayList<>();
-        try (Connection connection = ConnUtils.getConnection(DbType.ORACLE)) {
+        try (Connection conn = dataSource.getConnection()) {
             try {
-                DatabaseMetaData metaData = connection.getMetaData();
+                DatabaseMetaData metaData = conn.getMetaData();
                 ResultSet rs = metaData.getSchemas();
                 while (rs.next()) {
                     schemaList.add(rs.getString(1));
@@ -39,20 +49,19 @@ public class OracleTest {
     }
 
     /**
-     * 获取 Schema 下所有表名
+     * Get schema tables
      */
     @Test
     public void TableDemo() {
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
+        List<Map<String, String>> tableInfoList = new ArrayList<>();
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
             ResultSet rs = metaData.getTables(null, schemaName, null, queryType);
-
-            List<Map<String, String>> tableInfoList = new ArrayList<>();
             while (rs.next()) {
                 Map<String, String> tableVo = new HashMap<>();
                 String schema = rs.getString("TABLE_SCHEM");
-                String tableSchema = StringUtils.isNullOrEmpty(schema) ? schemaName : schema;
+                boolean isEmpty = Objects.isNull(schema) || Objects.equals(schema, "");
+                String tableSchema = isEmpty ? schemaName : schema;
                 tableVo.put("Schema", tableSchema);
                 tableVo.put("Name", rs.getString("TABLE_NAME"));
                 tableVo.put("Type", rs.getString("TABLE_TYPE"));
@@ -67,14 +76,14 @@ public class OracleTest {
     }
 
     /**
-     * 获取表结构字段信息
+     * Get table column info
      */
     @Test
     public void columnsInfo() {
-        try (Connection connection = ConnUtils.getConnection(DbType.ORACLE)) {
+        try (Connection conn = dataSource.getConnection()) {
             // 获取主键列表
             List<String> primaryKeyList = new ArrayList<>();
-            DatabaseMetaData metaData = connection.getMetaData();
+            DatabaseMetaData metaData = conn.getMetaData();
             ResultSet primaryKeyRs = metaData.getPrimaryKeys(null, schemaName, tableName);
             while (primaryKeyRs.next()) {
                 String name = primaryKeyRs.getString("COLUMN_NAME");
@@ -88,7 +97,7 @@ public class OracleTest {
             while (columnRs.next()) {
                 Map<String, String> columnVo = new LinkedHashMap<>();
                 String columnName = columnRs.getString("COLUMN_NAME");
-                Integer isPrimaryKey = primaryKeyList.contains(columnName) ? 1 : 0;
+                int isPrimaryKey = primaryKeyList.contains(columnName) ? 1 : 0;
                 columnVo.put("ColumnName", columnName);
                 columnVo.put("TypeName", columnRs.getString("TYPE_NAME"));
                 columnVo.put("ColumnSize", columnRs.getString("COLUMN_SIZE"));

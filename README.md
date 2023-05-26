@@ -15,6 +15,7 @@
 - **Oracle**: Maven、Spring Boot
 - **Redis**: Maven、Spring Boot
 - **Kafka**: Maven、Spring Boot
+- **Zookeeper**: Spring Boot
 - **FTP**: Maven
 - **MinIO**: Maven、Spring Boot
 - **Hive**: Maven

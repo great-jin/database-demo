@@ -1,5 +1,10 @@
 package xyz.ibudai.model;
 
+import lombok.Data;
+
+import java.util.Properties;
+
+@Data
 public class DbEntity {
 
     private String url;
@@ -8,47 +13,18 @@ public class DbEntity {
 
     private String password;
 
-    private String driverName;
+    /**
+     * Driver class name
+     */
+    private String driverClassName;
 
+    /**
+     * Driver location
+     */
     private String driverLocation;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
-    }
-
-    public String getDriverLocation() {
-        return driverLocation;
-    }
-
-    public void setDriverLocation(String driverLocation) {
-        this.driverLocation = driverLocation;
-    }
+    /**
+     * Database prop config
+     */
+    private Properties databaseProp;
 }

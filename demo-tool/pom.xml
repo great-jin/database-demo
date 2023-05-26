@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>xyz.ibudai</groupId>
+        <artifactId>database-demo</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>demo-tool</artifactId>
+
+    <properties>
+        <datasource.version>1.0.0-SNAPSHOT</datasource.version>
+        <mysql.version>8.0.31</mysql.version>
+        <ddlutils.version>1.0</ddlutils.version>
+        <calcite.version>1.33.0</calcite.version>
+        <hibernate.version>6.1.7.Final</hibernate.version>
+        <junit.version>4.13.2</junit.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>xyz.ibudai</groupId>
+            <artifactId>demo-pool</artifactId>
+            <version>${datasource.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <!-- ddlutils -->
+        <dependency>
+            <groupId>org.apache.ddlutils</groupId>
+            <artifactId>ddlutils</artifactId>
+            <version>${ddlutils.version}</version>
+        </dependency>
+        <!-- calcite -->
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-core</artifactId>
+            <version>${calcite.version}</version>
+        </dependency>
+        <!-- hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+    </dependencies>
+</project>

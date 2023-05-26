@@ -3,30 +3,29 @@ package xyz.ibudai.config;
 import org.apache.commons.dbcp2.BasicDataSource;
 import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.model.DbEntity;
-import xyz.ibudai.utils.DriverUtil;
+import xyz.ibudai.utils.LoaderUtil;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-/**
- * The type Basic pool.
- */
 public class BasicPool {
 
     /**
      * Build datasource data source.
      *
-     * @param dbType the db type
+     * @param dbEntity the db entity
      * @return the data source
      */
-    public static BasicDataSource buildDatasource(DbType dbType) {
-        DbEntity dbEntity = DriverUtil.buildDbInfo(dbType);
+    public static BasicDataSource buildDatasource(DbEntity dbEntity) {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(dbEntity.getUrl());
         dataSource.setUsername(dbEntity.getUser());
         dataSource.setPassword(dbEntity.getPassword());
-        dataSource.setDriverClassName(dbEntity.getDriverName());
-        // 从 Jar 包自定义 Driver 加载
-        ClassLoader classLoader = DriverUtil.getClassLoader(dbEntity.getDriverLocation());
+        dataSource.setDriverClassName(dbEntity.getDriverClassName());
+        // 自定义 Driver 加载
+        ClassLoader classLoader = LoaderUtil.getClassLoader(dbEntity.getDriverLocation());
         dataSource.setDriverClassLoader(classLoader);
         // 初始化连接池大小
         dataSource.setInitialSize(3);
@@ -40,6 +39,15 @@ public class BasicPool {
         dataSource.setMinEvictableIdleTimeMillis(TimeUnit.SECONDS.toMillis(30L));
         // 空闲连接清理线程运行间隔周期, 默认 60s
         dataSource.setTimeBetweenEvictionRunsMillis(TimeUnit.SECONDS.toMillis(60L));
+        // 数据库属性配置
+        Properties databaseProp = dbEntity.getDatabaseProp();
+        if (Objects.nonNull(databaseProp)) {
+            for (Map.Entry<Object, Object> entry : databaseProp.entrySet()) {
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
+                dataSource.addConnectionProperty(key, value);
+            }
+        }
         return dataSource;
     }
 }

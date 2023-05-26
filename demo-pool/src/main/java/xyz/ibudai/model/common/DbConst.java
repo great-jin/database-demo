@@ -1,5 +1,7 @@
 package xyz.ibudai.model.common;
 
+import java.util.Properties;
+
 public class DbConst {
 
     /**
@@ -8,8 +10,7 @@ public class DbConst {
     public final static String MYSQL_URL = "jdbc:mysql://10.231.6.21:3306/test_db";
     public final static String MYSQL_USERNAME = "root";
     public final static String MYSQL_PASSWORD = "budai#123456";
-    public final static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public final static String MYSQL_DRIVER_1 = "com.mysql.cj.jdbc.Driver";
+    public final static String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver"; // com.mysql.jdbc.Driver
     public final static String MYSQL_DRIVER_PATH = "E:\\Workspace\\Driver\\mysql-connector-java.jar";
 
     /**
@@ -20,7 +21,14 @@ public class DbConst {
     public final static String ORACLE_PASSWORD = "budai#123456";
     public final static String ORACLE_DRIVER = "oracle.jdbc.OracleDriver";
     public final static String ORACLE_DRIVER_PATH = "E:\\Workspace\\Driver\\ojdbc6-11.2.0.3.jar";
-    public final static String ORACLE_DRIVER_PATH_1 = "E:\\Workspace\\Driver\\ojdbc8-12.2.0.1.jar";
+    private final static Properties ORACLE_PROPS = new Properties();
+
+    static {
+        // Metadata remark null
+        ORACLE_PROPS.put("remarksReporting", "true");
+        //
+        ORACLE_PROPS.put("useFetchSizeWithLongColumn", "true");
+    }
 
     /**
      * Hive connection info

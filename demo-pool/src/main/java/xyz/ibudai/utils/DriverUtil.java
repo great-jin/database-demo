@@ -1,10 +1,7 @@
 package xyz.ibudai.utils;
 
-import xyz.ibudai.model.common.DbType;
-import xyz.ibudai.model.common.DbConst;
 import xyz.ibudai.model.DbEntity;
-import xyz.ibudai.model.DbDriverEntity;
-import xyz.ibudai.model.DriverPackageEntity;
+import xyz.ibudai.model.DriverEntity;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
@@ -13,92 +10,30 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/**
- * The type Driver util.
- */
 public class DriverUtil {
 
-    /**
-     * Build db info string [ ].
-     *
-     * @param dbType the db type
-     * @return the string [ ]
-     */
-    public static DbEntity buildDbInfo(DbType dbType) {
-        DbEntity dbEntity = new DbEntity();
-        switch (dbType) {
-            case MYSQL:
-                dbEntity.setUrl(DbConst.MYSQL_URL);
-                dbEntity.setUser(DbConst.MYSQL_USERNAME);
-                dbEntity.setPassword(DbConst.MYSQL_PASSWORD);
-                dbEntity.setDriverName(DbConst.MYSQL_DRIVER_1);
-                dbEntity.setDriverLocation(DbConst.MYSQL_DRIVER_PATH);
-                break;
-            case ORACLE:
-                dbEntity.setUrl(DbConst.ORACLE_URL);
-                dbEntity.setUser(DbConst.ORACLE_USERNAME);
-                dbEntity.setPassword(DbConst.ORACLE_PASSWORD);
-                dbEntity.setDriverName(DbConst.ORACLE_DRIVER);
-                dbEntity.setDriverLocation(DbConst.ORACLE_DRIVER_PATH);
-                break;
-            case HIVE:
-                dbEntity.setUrl(DbConst.HIVE_URL);
-                dbEntity.setUser(DbConst.HIVE_USERNAME);
-                dbEntity.setPassword(DbConst.HIVE_PASSWORD);
-                dbEntity.setDriverName(DbConst.HIVE_DRIVER);
-                dbEntity.setDriverLocation(DbConst.HIVE_DRIVER_PATH);
-                break;
-        }
-        return dbEntity;
-    }
+    private static final String driverDir = "E:\\Workspace\\Driver";
 
     /**
-     * Gets class loader.
+     * Get db driver className
      *
-     * @param driverPath the driver path
-     * @return the class loader
+     * @param entity
      */
-    public static ClassLoader getClassLoader(String driverPath) {
-        // 获取当前线程上下文加载器
-        ClassLoader parent = Thread.currentThread().getContextClassLoader();
-        URL[] urls;
-        try {
-            List<URL> list = new ArrayList<>();
-            File driver = new File(driverPath);
-            // 驱动包不存在抛出异常
-            if (!driver.exists()) {
-                throw new ClassNotFoundException();
-            }
-            // 若为目录获取其下所有文件
-            if (driver.isDirectory()) {
-                for (File file : driver.listFiles()) {
-                    list.add(file.toURI().toURL());
-                }
-            } else {
-                // 驱动存在获取文件URL
-                list.add(driver.toURI().toURL());
-            }
-            urls = list.toArray(new URL[0]);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return new URLClassLoader(urls, parent);
-    }
-
-    public static DbDriverEntity getDriverEntity(DbEntity entity) {
-        List<DriverPackageEntity> driverList = getDriverList("E:\\Workspace\\Driver\\lib");
-        DriverPackageEntity driver = driverList.stream()
+    public static DriverEntity getDriverEntity(DbEntity entity) {
+        List<DriverEntity> driverList = getDriverList(driverDir);
+        DriverEntity driver = driverList.stream()
                 .filter(vo -> {
                     boolean flag = false;
                     if (entity.getUrl().startsWith("jdbc:oracle")) {
-                        if (vo.getPath().contains("ojdbc6")) {
+                        if (vo.getLocation().contains("ojdbc6")) {
                             flag = true;
                         }
                     } else {
-                        if (vo.getClassName().equals(entity.getDriverName())) {
+                        if (vo.getClassName().equals(entity.getDriverClassName())) {
                             flag = true;
                         }
                     }
@@ -106,22 +41,25 @@ public class DriverUtil {
                 })
                 .findFirst()
                 .orElse(null);
-        DbDriverEntity driverEntity = new DbDriverEntity();
-        if (driver != null) {
-            driverEntity.setDriverName(driver.getClassName());
-            driverEntity.setDriverLocation(driver.getPath());
+        if (Objects.isNull(driver)) {
+            throw new RuntimeException("Driver didn't march.");
         }
-        return driverEntity;
+        return driver;
     }
 
-    public static List<DriverPackageEntity> getDriverList(String path) {
-        File driverDir = new File(path);
+    /**
+     * Get Driver basic info.
+     *
+     * @param directory local driver directory
+     */
+    public static List<DriverEntity> getDriverList(String directory) {
+        File driverDir = new File(directory);
         if (!driverDir.exists()) {
-            throw new IllegalArgumentException("File " + path + " doesn't existed.");
+            throw new IllegalArgumentException("Directory " + directory + " doesn't existed.");
         }
         File[] driverList = driverDir.listFiles();
-        List<DriverPackageEntity> fileList = new ArrayList<>();
-        for (File file : driverList) {
+        List<DriverEntity> fileList = new ArrayList<>();
+        for (File file : Objects.requireNonNull(driverList)) {
             if (!file.isFile()) {
                 continue;
             }
@@ -134,9 +72,9 @@ public class DriverUtil {
                 } catch (Exception e) {
                     continue;
                 }
-                DriverPackageEntity driver = new DriverPackageEntity();
-                driver.setName(fileName);
-                driver.setPath(filePath);
+                DriverEntity driver = new DriverEntity();
+                driver.setFileName(fileName);
+                driver.setLocation(filePath);
                 driver.setClassName(className);
                 fileList.add(driver);
             }
@@ -144,42 +82,45 @@ public class DriverUtil {
         return fileList;
     }
 
+    /**
+     * Get class name from Driver file
+     *
+     * @param driverPath driver store path
+     */
     private static String getDriverName(String driverPath) {
         String className = null;
         File driverFile = new File(driverPath);
-        if (!driverFile.isFile() || !driverFile.exists()) {
-            throw new IllegalArgumentException("File " + driverFile + " doesn't existed.");
+        if (!driverFile.exists() || !driverFile.isFile()) {
+            throw new IllegalArgumentException("File " + driverPath + " didn't exist or isn't file");
+        }
+        String fileName = driverFile.getName();
+        if (!fileName.endsWith(".jar")) {
+            throw new IllegalArgumentException("File " + driverPath + " isn't jar");
         }
 
-        String fileName = driverFile.getName();
-        if (!fileName.endsWith(".zip") && !fileName.endsWith(".jar")) {
-            throw new IllegalArgumentException("File " + driverFile + " is not jar or zip.");
-        }
         try (
                 URLClassLoader classLoader = new URLClassLoader(new URL[]{driverFile.toURI().toURL()});
                 ZipFile zip = new ZipFile(driverFile)
         ) {
-            String tempName;
             Enumeration<?> enumZip = zip.entries();
             while (enumZip.hasMoreElements()) {
                 ZipEntry entry = (ZipEntry) enumZip.nextElement();
-                if (!entry.isDirectory()) {
-                    if ((tempName = entry.getName()).endsWith(".class") && !tempName.contains("$")) {
-                        // 将驱动类路径中的 / 替换成.
-                        className = tempName.substring(0, tempName.lastIndexOf(".class"));
-                        className = className.replaceAll("/", ".");
-                        Class<?> c;
-                        try {
-                            c = classLoader.loadClass(className);
-                        } catch (Throwable t) {
-                            return className;
-                        }
-                        // 判断驱动类是 java.sql.Driver 的子类, 是否为一个抽象类
-                        // c1.isAssignableFrom(c2): 判断 c2 是不是 c1 的子类或接口实现类
-                        if (java.sql.Driver.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
-                            return className;
-                        }
-                    }
+                String itemName = entry.getName();
+                if (entry.isDirectory() || !itemName.endsWith(".class")) {
+                    continue;
+                }
+                // 将驱动类路径中的 / 替换成.
+                className = itemName.replace("/", ".");
+                className = className.substring(0, className.lastIndexOf(".class"));
+                Class<?> c;
+                try {
+                    c = classLoader.loadClass(className);
+                } catch (Throwable t) {
+                    return className;
+                }
+                // 判断驱动类是 java.sql.Driver 的子类, 是否为一个抽象类
+                if (java.sql.Driver.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
+                    return className;
                 }
             }
         } catch (Exception e) {
