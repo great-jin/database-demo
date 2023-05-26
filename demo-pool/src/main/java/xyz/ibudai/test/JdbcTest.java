@@ -2,8 +2,10 @@ package xyz.ibudai.test;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
+import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.config.BasicPool;
+import xyz.ibudai.utils.LoaderUtil;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetFactory;
@@ -32,27 +34,26 @@ public class JdbcTest {
     }
 
     @Test
-    public void demo2() {
+    public void CachedRowSetDemo() {
         String sql = "select 'a' as name from dual";
-        BasicDataSource dataSource = BasicPool.buildDatasource(DbType.ORACLE);
-        for (int i = 0; i < 1; i++) {
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
+        try (
+                BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
+                Connection con = dataSource.getConnection();
+                Statement stmt = con.createStatement();
+        ) {
+            RowSetFactory factory = RowSetProvider.newFactory();
             try (
-                    Connection con = dataSource.getConnection();
-                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(sql);
+                    CachedRowSet rowSet = factory.createCachedRowSet();
             ) {
-                RowSetFactory factory = RowSetProvider.newFactory();
-                try (
-                        ResultSet rs = stmt.executeQuery(sql);
-                        CachedRowSet rowSet = factory.createCachedRowSet();
-                ) {
-                    rowSet.populate(rs);
-                    while (rowSet.next()) {
-                        // do something
-                    }
+                rowSet.populate(rs);
+                while (rowSet.next()) {
+                    // do something
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
