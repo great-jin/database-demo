@@ -5,34 +5,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarClassLoader extends URLClassLoader {
 
-    private final String className;
-
     /**
      * Use default parent class load
      */
-    public JarClassLoader(URL[] urls, String className) {
+    public JarClassLoader(URL[] urls) {
         super(urls);
-        this.className = className;
     }
 
     /**
-     * Specify thr parent class load
+     * Specify the parent class load
      */
-    public JarClassLoader(URL[] urls, String className, ClassLoader parent) {
+    public JarClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
-        this.className = className;
     }
 
     @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
+    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
             Class<?> c = findLoadedClass(name);
             if (c == null) {
@@ -45,6 +40,9 @@ public class JarClassLoader extends URLClassLoader {
             if (c == null) {
                 c = super.loadClass(name);
             }
+            if (resolve) {
+                resolveClass(c);
+            }
             return c;
         }
     }
@@ -53,7 +51,7 @@ public class JarClassLoader extends URLClassLoader {
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         byte[] classBytes;
         try {
-            classBytes = getClassByteFromJar(this.className);
+            classBytes = getClassByteFromJar(name);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

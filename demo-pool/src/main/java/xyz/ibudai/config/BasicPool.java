@@ -1,13 +1,10 @@
 package xyz.ibudai.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.utils.LoaderUtil;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class BasicPool {

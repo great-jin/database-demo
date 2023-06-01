@@ -5,6 +5,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.elasticsearch.Version;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.client.*;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
@@ -18,17 +19,19 @@ import java.util.Set;
 
 public class MyTest {
 
+    private final String host = "192.168.175.30";
+    private final int port = 9200;
+    private final boolean isAuth = true;
+    private final String username = "elastic";
+    private final String password = "elastic";
+
     private RestHighLevelClient client;
 
     @Before
     public void init() {
-        // 创建连接用户信息
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("elastic", "elastic"));
-        // 构建连接对象
-        RestClientBuilder builder = RestClient.builder(new HttpHost("192.168.175.30", 9200))
-                // 配置连接超时
+        // 连接对象构建
+        RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
+                // 连接超时配置
                 .setRequestConfigCallback(requestConfigBuilder ->
                         requestConfigBuilder.setConnectTimeout(3000)
                                 .setSocketTimeout(5000)
@@ -38,8 +41,15 @@ public class MyTest {
                     httpClientBuilder.disableAuthCaching();
                     httpClientBuilder.setMaxConnTotal(100);
                     httpClientBuilder.setMaxConnPerRoute(100);
-                    // 用户认证
-                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    if (isAuth) {
+                        // 用户认证
+                        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                        credentialsProvider.setCredentials(AuthScope.ANY,
+                                new UsernamePasswordCredentials(username, password));
+                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    } else {
+                        return httpClientBuilder;
+                    }
                 });
         client = new RestHighLevelClient(builder);
     }
@@ -53,6 +63,13 @@ public class MyTest {
     public void testConnect() throws IOException {
         boolean ping = client.ping(RequestOptions.DEFAULT);
         System.out.println(ping);
+    }
+
+    @Test
+    public void versionDemo() throws IOException {
+        Version version = client.info(RequestOptions.DEFAULT).getVersion();
+        System.out.println("ES version: " + version);
+        System.out.println("ES lucene version: " + version.luceneVersion);
     }
 
     @Test
