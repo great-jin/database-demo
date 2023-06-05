@@ -5,18 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Objects;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarClassLoader extends URLClassLoader {
 
-    /**
-     * Use default parent class load
-     */
-    public JarClassLoader(URL[] urls) {
-        super(urls);
+    private static final List<String> driverList = new ArrayList<>();
+
+    static {
+        driverList.add("com.mysql.jdbc.Driver");
+        driverList.add("com.mysql.cj.jdbc.Driver");
+        driverList.add("oracle.jdbc.OracleDriver");
+        driverList.add("oracle.jdbc.driver.OracleDriver");
     }
 
     /**
@@ -30,25 +33,28 @@ public class JarClassLoader extends URLClassLoader {
     public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
             Class<?> c = findLoadedClass(name);
-            if (c == null) {
+            if (c != null) {
+                // Skip if already load
+                return c;
+            }
+            if (driverList.contains(name)) {
+                // Custom load logic
                 try {
-                    c = findClass(name);
-                } catch (ClassNotFoundException ignored) {
-                    c = super.loadClass(name);
+                    c = customFindClass(name);
+                    if (resolve) {
+                        resolveClass(c);
+                    }
+                    return c;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
-            if (c == null) {
-                c = super.loadClass(name);
-            }
-            if (resolve) {
-                resolveClass(c);
-            }
-            return c;
+            // If not in target list then go with default load way.
+            return super.loadClass(name, resolve);
         }
     }
 
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    private Class<?> customFindClass(String name) throws ClassNotFoundException {
         byte[] classBytes;
         try {
             classBytes = getClassByteFromJar(name);
@@ -61,6 +67,12 @@ public class JarClassLoader extends URLClassLoader {
         return this.defineClass(name, classBytes, 0, classBytes.length);
     }
 
+    /**
+     * Get target class bytes within jar file
+     *
+     * @param className target class name
+     * @return class byte data
+     */
     private byte[] getClassByteFromJar(String className) throws IOException {
         String path = this.getURLs()[0].getPath();
         path = path.substring(1);
@@ -69,7 +81,7 @@ public class JarClassLoader extends URLClassLoader {
             while (entries.hasMoreElements()) {
                 JarEntry jarEntry = entries.nextElement();
                 String jarName = jarEntry.getName();
-                if (jarEntry.isDirectory() || !jarName.endsWith(".class")) {
+                if (jarEntry.isDirectory() || !jarName.endsWith(".class") || jarName.contains("$")) {
                     continue;
                 }
                 jarName = jarName.replace("/", ".");

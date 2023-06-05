@@ -1,5 +1,6 @@
 package xyz.ibudai.utils;
 
+import xyz.ibudai.loader.JarClassLoader;
 import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.model.common.DbConst;
 import xyz.ibudai.model.common.DbType;
@@ -7,7 +8,6 @@ import xyz.ibudai.model.common.DbType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +68,6 @@ public class LoaderUtil {
         }
         // 获取当前线程上下文加载器
         ClassLoader parent = Thread.currentThread().getContextClassLoader();
-        return new URLClassLoader(list.toArray(new URL[0]), parent);
+        return new JarClassLoader(list.toArray(new URL[0]), parent);
     }
 }

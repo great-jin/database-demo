@@ -15,8 +15,8 @@ public class JarLoadTest {
 
     @Test
     public void demo1() {
-        String sql = "select 'a' as name";
-        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.MYSQL);
+        String sql = "select 'a' as name from dual";
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
         try (
                 BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
                 Connection con = dataSource.getConnection();
