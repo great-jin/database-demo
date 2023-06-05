@@ -11,7 +11,7 @@ public class DriverTest {
 
     @Test
     public void demo1() {
-        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.MYSQL);
+        DbEntity dbEntity = LoaderUtil.buildDbInfo(DbType.ORACLE);
         // Filter depended on entity driver class name
         DriverEntity driverEntity = DriverUtil.getDriverEntity(dbEntity);
         System.out.println(driverEntity);
