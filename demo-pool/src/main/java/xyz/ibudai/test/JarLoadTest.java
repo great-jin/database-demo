@@ -21,9 +21,8 @@ public class JarLoadTest {
                 BasicDataSource dataSource = BasicPool.buildDatasource(dbEntity);
                 Connection con = dataSource.getConnection();
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
         ) {
-            System.out.println("");
+            stmt.execute(sql);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -1,11 +1,10 @@
-package xyz.ibudai.test;
+package xyz.ibudai.basic;
 
 import org.junit.Before;
 import org.junit.Test;
 import xyz.ibudai.config.BasicPool;
 import xyz.ibudai.model.DbEntity;
 import xyz.ibudai.model.common.DbType;
-import xyz.ibudai.config.ConnUtils;
 import xyz.ibudai.utils.LoaderUtil;
 
 import javax.sql.DataSource;
