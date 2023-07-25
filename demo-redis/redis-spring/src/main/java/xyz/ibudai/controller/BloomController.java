@@ -7,7 +7,7 @@ import xyz.ibudai.utils.BloomFilterHelper;
 import xyz.ibudai.utils.BloomFilterUtils;
 
 @RestController
-@RequestMapping("/bloom")
+@RequestMapping(value = "/api/redis/bloom")
 public class BloomController {
 
     @Autowired

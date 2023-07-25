@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping(value = "/redis")
-public class StoreController {
+@RequestMapping(value = "/api/redis/basic")
+public class BasicController {
 
     @Autowired
     private RedisUtils redisUtils;
@@ -29,7 +29,9 @@ public class StoreController {
     @GetMapping("/get")
     public User get(@RequestParam("Id") String Id) {
         User user;
+        // 查询缓存数据
         user = (User) redisUtils.get(Id);
+        // 缓存命中则返回数据, 否则读取数据库
         if (user == null) {
             user = new User(123, "Alex", "123", new Date());
             // 将查出来的数据存入 Redis

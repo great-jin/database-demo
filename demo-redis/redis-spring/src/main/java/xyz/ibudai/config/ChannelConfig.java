@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import xyz.ibudai.config.listener.Listener2Test;
-import xyz.ibudai.config.listener.Listener1Test;
+import xyz.ibudai.listener.Channel2Listener;
+import xyz.ibudai.listener.Channel1Listener;
 
 @Configuration
 public class ChannelConfig {
@@ -22,16 +22,16 @@ public class ChannelConfig {
      * 创建监听器 - 订阅者 1号
      */
     @Bean
-    public Listener1Test listener1Test() {
-        return new Listener1Test();
+    public Channel1Listener listener1Test() {
+        return new Channel1Listener();
     }
 
     /**
      * 创建监听器 - 订阅者 2号
      */
     @Bean
-    public Listener2Test listener2Test() {
-        return new Listener2Test();
+    public Channel2Listener listener2Test() {
+        return new Channel2Listener();
     }
 
     /**
