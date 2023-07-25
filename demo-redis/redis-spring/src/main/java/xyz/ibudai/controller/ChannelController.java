@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("channel")
+@RequestMapping(value = "/api/redis/channel")
 public class ChannelController {
 
     @Autowired

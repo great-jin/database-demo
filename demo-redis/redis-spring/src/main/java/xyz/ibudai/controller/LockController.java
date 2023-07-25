@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.ibudai.service.RedisLockService;
 
 @RestController
-@RequestMapping("/lock")
+@RequestMapping(value = "/api/redis/lock")
 public class LockController {
 
     @Autowired
@@ -19,8 +19,8 @@ public class LockController {
         try {
             token = redisLockService.lock("lock_name", 10000, 11000);
             if (token != null) {
-                System.out.print("我拿到了锁哦");
                 // 执行业务代码
+                System.out.print("我拿到了锁哦");
             } else {
                 System.out.print("我没有拿到锁唉");
             }

@@ -8,7 +8,7 @@ import xyz.ibudai.bean.User;
 import xyz.ibudai.service.UserService;
 
 @RestController
-@RequestMapping("/cache")
+@RequestMapping(value = "/api/redis/cache")
 public class CacheController {
 
     @Autowired

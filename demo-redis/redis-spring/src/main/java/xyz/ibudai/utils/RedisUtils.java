@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -143,8 +143,8 @@ public class RedisUtils {
      * @param keys 可以传一个值或多个
      */
     public void batchRemove(String... keys) {
-        if (keys == null || keys.length <= 0) {
-            throw new IllegalArgumentException("keys can not be null!");
+        if (keys == null || keys.length == 0) {
+            return;
         }
         if (keys.length == 1) {
             redisTemplate.delete(keys[0]);
@@ -158,12 +158,19 @@ public class RedisUtils {
      *
      * @param keys 可以传一个值 或多个
      */
-    public void batchDelete(Collection keys) {
-        if (!CollectionUtils.isEmpty(keys)) {
-            redisTemplate.delete(keys);
-        } else {
-            throw new IllegalArgumentException("keys can not be null!");
+    public Boolean batchRemove(Set<String> keys) {
+        if (Objects.isNull(keys) || keys.isEmpty()) {
+            return false;
         }
+
+        Boolean flag;
+        if (keys.size() == 1) {
+            flag = redisTemplate.delete((String) keys.toArray()[0]);
+        } else {
+            Long num = redisTemplate.delete(keys);
+            flag = !Objects.isNull(num) && num > 0;
+        }
+        return flag;
     }
 }
 
