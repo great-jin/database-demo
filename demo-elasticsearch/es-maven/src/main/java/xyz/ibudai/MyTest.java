@@ -1,57 +1,35 @@
 package xyz.ibudai;
 
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.client.*;
+import org.elasticsearch.client.indices.GetMappingsRequest;
+import org.elasticsearch.client.indices.GetMappingsResponse;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import xyz.ibudai.util.ESUtil;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class MyTest {
-
-    private final String host = "192.168.175.30";
-    private final int port = 9200;
-    private final boolean isAuth = true;
-    private final String username = "elastic";
-    private final String password = "elastic";
 
     private RestHighLevelClient client;
 
     @Before
     public void init() {
-        // 连接对象构建
-        RestClientBuilder builder = RestClient.builder(new HttpHost(host, port))
-                // 连接超时配置
-                .setRequestConfigCallback(requestConfigBuilder ->
-                        requestConfigBuilder.setConnectTimeout(3000)
-                                .setSocketTimeout(5000)
-                                .setConnectionRequestTimeout(500))
-                // 异步连接数配置
-                .setHttpClientConfigCallback(httpClientBuilder -> {
-                    httpClientBuilder.disableAuthCaching();
-                    httpClientBuilder.setMaxConnTotal(100);
-                    httpClientBuilder.setMaxConnPerRoute(100);
-                    if (isAuth) {
-                        // 用户认证
-                        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                        credentialsProvider.setCredentials(AuthScope.ANY,
-                                new UsernamePasswordCredentials(username, password));
-                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                    } else {
-                        return httpClientBuilder;
-                    }
-                });
-        client = new RestHighLevelClient(builder);
+        Properties props = new Properties();
+        props.put("host", "127.0.0.1");
+        props.put("port", 9200);
+        props.put("isAuth", true);
+        props.put("username", "elastic");
+        props.put("password", "elastic");
+        client = ESUtil.buildClient(props);
     }
 
     @After
@@ -84,6 +62,26 @@ public class MyTest {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void listMapping() throws IOException {
+        String indexName = "statement_of_account_2023-08"; // Replace with your index name
+        try {
+            org.elasticsearch.client.indices.GetMappingsRequest request = new GetMappingsRequest().indices(indexName);
+            GetMappingsResponse response = client.indices().getMapping(request, RequestOptions.DEFAULT);
+            MappingMetaData mappingMetaData = response.mappings().get(indexName);
+            Map<String, Object> mapping = mappingMetaData.sourceAsMap();
+            Map<String, ?> properties = (Map<String, ?>) mapping.get("properties");
+            Set<String> keySet = properties.keySet();
+            for (String name : keySet) {
+                String type = (String) ((Map<String, ?>) properties.get(name)).get("type");
+                System.out.printf("Type: %s, \tName: %s\n", type, name);
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
         }
     }
 }
