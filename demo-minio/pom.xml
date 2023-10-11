@@ -16,4 +16,54 @@
         <module>minio-maven</module>
         <module>minio-spring</module>
     </modules>
+
+
+    <properties>
+        <minio.version>8.3.5</minio.version>
+        <okhttp.version>4.9.2</okhttp.version>
+        <tika-core.version>1.14</tika-core.version>
+        <simplemagic.version>1.16</simplemagic.version>
+        <junit.version>4.13.2</junit.version>
+    </properties>
+
+    <dependencies>
+        <!--Minio 依赖 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+            <!-- minio 要求 okhttp 的版本 >= 4.8.1 ，但其自带的默认为 3.14.8 -->
+            <!-- 因为需要将原本的 okhttp 依赖排除，手动添加高于 4.8.1 的版本 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
+        <!-- 文件类型 -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${tika-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.simplemagic</groupId>
+            <artifactId>simplemagic</artifactId>
+            <version>${simplemagic.version}</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+    </dependencies>
 </project>

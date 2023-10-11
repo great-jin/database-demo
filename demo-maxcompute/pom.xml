@@ -15,4 +15,40 @@
     <modules>
         <module>mc-maven</module>
     </modules>
+
+
+    <properties>
+        <hutool.version>5.5.8</hutool.version>
+        <odps.version>3.0.1</odps.version>
+        <hibernate.version>3.6.10.Final</hibernate.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <!-- MaxCompute -->
+        <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>odps-jdbc</artifactId>
+            <version>${odps.version}</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
+        <!-- Hibernate依赖 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -8,7 +8,6 @@ import xyz.ibudai.model.common.DbType;
 import xyz.ibudai.utils.LoaderUtil;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class JarLoadTest {

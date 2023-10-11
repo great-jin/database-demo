@@ -11,30 +11,19 @@
 
     <artifactId>ftp-maven</artifactId>
 
-    <properties>
-        <commons-net.version>3.6</commons-net.version>
-        <jackson.version>2.13.3</jackson.version>
-        <junit.version>4.13.2</junit.version>
-    </properties>
-
     <dependencies>
-        <!-- FTP -->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
-            <version>${commons-net.version}</version>
         </dependency>
-        <!-- Json -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
-        <!-- Test -->
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
         </dependency>
     </dependencies>
 </project>

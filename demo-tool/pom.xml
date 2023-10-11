@@ -23,9 +23,10 @@
     <dependencies>
         <dependency>
             <groupId>xyz.ibudai</groupId>
-            <artifactId>demo-pool</artifactId>
+            <artifactId>demo-jdbc</artifactId>
             <version>${datasource.version}</version>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

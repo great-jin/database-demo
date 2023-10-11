@@ -29,6 +29,7 @@
             <artifactId>spring-kafka</artifactId>
             <version>${kafka.version}</version>
         </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
