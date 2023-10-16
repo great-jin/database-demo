@@ -24,7 +24,6 @@
         <module>demo-zookeeper</module>
         <module>demo-rabbitmq</module>
         <module>demo-hadoop</module>
-        <module>demo-hive</module>
         <module>demo-hbase</module>
         <module>demo-ftp</module>
         <module>demo-minio</module>

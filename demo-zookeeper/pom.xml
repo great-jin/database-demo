@@ -16,5 +16,4 @@
         <module>cluster-node</module>
         <module>cluster-center</module>
     </modules>
-
 </project>
