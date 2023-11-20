@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.ibudai.repository.IndexService;
+import xyz.ibudai.repository.IndexRepository;
 
 @RestController
 @RequestMapping("api/es/index")
 public class IndexController {
 
     @Autowired
-    IndexService indexService;
+    IndexRepository indexService;
 
     @GetMapping("exist")
     public boolean isExist(@RequestParam("indexName") String indexName) {

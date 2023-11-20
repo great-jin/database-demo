@@ -3,7 +3,7 @@ package xyz.ibudai.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.ibudai.model.User;
-import xyz.ibudai.repository.UserService;
+import xyz.ibudai.repository.UserRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userService;
 
     @GetMapping("getById")
     public User getById(@RequestParam("indexName") String indexName, @RequestParam("id") String id) {
@@ -49,6 +49,6 @@ public class UserController {
     @GetMapping("delete")
     public String delete(@RequestParam("indexName") String indexName,
                          @RequestParam("id") String id) {
-        return userService.deleted(indexName, id);
+        return userService.delete(indexName, id);
     }
 }
