@@ -30,6 +30,7 @@
         <module>demo-elasticsearch</module>
         <module>demo-maxcompute</module>
         <module>demo-tool</module>
+        <module>demo-debezium</module>
     </modules>
 
     <build>
