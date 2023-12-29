@@ -1,21 +1,16 @@
-package xyz.ibudai.mysql;
+package xyz.ibudai.mysql.test;
 
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
-import xyz.ibudai.common.handler.JsonChangeConsumer;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class MySQLTest {
+public class MonitorTest {
 
-    private static final Properties props = new Properties();
-
-    @Before
-    public void init() {
+    public static void main(String[] args) {
+        final Properties props = new Properties();
         props.setProperty("name", "mysql-engine");
         props.setProperty("connector.class", "io.debezium.connector.mysql.MySqlConnector");
         props.setProperty("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore");
@@ -27,34 +22,21 @@ public class MySQLTest {
         props.setProperty("database.user", "root");
         props.setProperty("database.password", "123456");
         props.setProperty("database.server.id", "1");
+        props.setProperty("database.include.list", "db_debezium");
 
         props.setProperty("topic.prefix", "mysql-connector");
         props.setProperty("schema.history.internal",
                 "io.debezium.storage.file.history.FileSchemaHistory");
         props.setProperty("schema.history.internal.file.filename",
-                "E:\\Workspace\\debezium\\schemahistory.dat");
-    }
+                "E:\\Workspace\\debezium\\schemaHistory.dat");
 
-    @Test
-    public void demo1() {
-        props.setProperty("database.include.list", "db_debezium");
-        monitor(props);
-    }
-
-    @Test
-    public void demo2() {
-        props.setProperty("database.include.list", "db_debezium");
-        props.setProperty("table.include.list", "tb_include");
-        monitor(props);
-    }
-
-    private void monitor(Properties props) {
+        // Create the engine with this configuration ...
         try (
-                // Create the engine with this configuration ...
                 DebeziumEngine<ChangeEvent<String, String>> engine = DebeziumEngine.create(Json.class)
                         .using(props)
-                        .notifying(new JsonChangeConsumer())
-                        .build()
+                        .notifying(record -> {
+                            System.out.println(record);
+                        }).build();
         ) {
             // Run the engine asynchronously ...
             new Thread(engine).start();
@@ -64,15 +46,6 @@ public class MySQLTest {
             TimeUnit.MINUTES.sleep(5);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void convertToText(ChangeEvent<String, String> record) {
-        try {
-            System.out.println("Key: " + record.key());
-            System.out.println("Value: " + record.value());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

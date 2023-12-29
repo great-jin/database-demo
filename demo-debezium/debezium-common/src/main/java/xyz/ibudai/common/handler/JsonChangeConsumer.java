@@ -22,19 +22,19 @@ public class JsonChangeConsumer implements DebeziumEngine.ChangeConsumer<ChangeE
             try {
                 String value = record.value();
                 if (Objects.isNull(value)) {
-                    System.out.println("1-" + record);
+                    System.out.println("1: " + record);
                     return;
                 }
 
                 JsonNode node = mapper.readValue(value, JsonNode.class);
                 if (Objects.isNull(node)) {
-                    System.out.println("2-" + record);
+                    System.out.println("2: " + record);
                     return;
                 }
 
                 JsonNode payload = node.get("payload");
                 if (Objects.isNull(payload)) {
-                    System.out.println("3-" + record);
+                    System.out.println("3: " + record);
                     return;
                 }
 
