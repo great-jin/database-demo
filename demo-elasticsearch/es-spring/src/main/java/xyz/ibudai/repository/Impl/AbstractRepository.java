@@ -2,7 +2,6 @@ package xyz.ibudai.repository.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -13,16 +12,19 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.cluster.metadata.AliasMetadata;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.core.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import xyz.ibudai.model.Condition;
+import xyz.ibudai.model.PageDetail;
+import xyz.ibudai.model.QueryType;
 import xyz.ibudai.repository.Repository;
 
 import java.io.IOException;
@@ -30,8 +32,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,129 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     }
 
     @Override
+    public List<T> list(String... index) {
+        SearchRequest request = new SearchRequest(index);
+        // build condition
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+        builder.query(QueryBuilders.matchAllQuery());
+        builder.timeout(new TimeValue(5, TimeUnit.MINUTES));
+        // data limit, default return 10 row
+        // set size by "builder.size(Integer)"
+        builder.trackTotalHits(true);
+        // set request config
+        request.source(builder);
+        return search(request).getData();
+    }
+
+    @Override
+    public List<T> listByCondition(String index, List<Condition> conditions) {
+        return pageByCondition(index, -1, -1, conditions).getData();
+    }
+
+    @Override
+    public PageDetail<T> page(String index, Integer limit, Integer offset) {
+        return pageByCondition(index, limit, offset, null);
+    }
+
+    @Override
+    public PageDetail<T> pageByCondition(String index, Integer limit, Integer offset, List<Condition> conditions) {
+        SearchRequest request = new SearchRequest(index);
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+        builder.trackTotalHits(true);
+        if (Objects.nonNull(limit) && limit != -1) {
+            if (limit < 1 || Objects.isNull(offset) || offset < 1) {
+                throw new IllegalArgumentException("Paging params is illegal");
+            }
+            // paging query
+            builder.size(limit);
+            builder.from((offset - 1) * limit);
+        }
+
+        // build query condition
+        if (Objects.isNull(conditions) || conditions.isEmpty()) {
+            // query all data
+            builder.query(QueryBuilders.matchAllQuery());
+        } else {
+            builder.query(createQueryBuilder(conditions));
+        }
+        // set request config
+        request.source(builder);
+        return search(request);
+    }
+
+    private BoolQueryBuilder createQueryBuilder(List<Condition> conditionList) {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        for (Condition condition : conditionList) {
+            QueryType queryType = condition.getQueryType();
+            String fieldName = condition.getFieldName();
+            Object fieldValues = condition.getFieldValues();
+            QueryBuilder queryBuilder;
+            switch (queryType) {
+                case EQUAL:
+                    // termQuery(): "where fieldName = fieldValues"
+                    queryBuilder = QueryBuilders.termQuery(fieldName, fieldValues);
+                    break;
+                case NOT_EQUAL:
+                    queryBuilder = QueryBuilders.boolQuery()
+                            .mustNot(QueryBuilders.matchQuery(fieldName, fieldValues));
+                    break;
+                case IN:
+                    // termsQuery(): "where fieldName in (fieldValues...)"
+                    queryBuilder = QueryBuilders.termsQuery(fieldName, fieldValues);
+                    break;
+                case NOT_IN:
+                    queryBuilder = QueryBuilders.boolQuery()
+                            .mustNot(QueryBuilders.termsQuery(fieldName, fieldValues));
+                    break;
+                case LIKE:
+                    queryBuilder = QueryBuilders.fuzzyQuery(fieldName, fieldValues)
+                            .fuzziness(Fuzziness.AUTO);
+                    break;
+                case GREATER:
+                    // gt(): "where fieldName > fieldValues"
+                    queryBuilder = QueryBuilders.rangeQuery(fieldName).gt(fieldValues);
+                    break;
+                case GREATER_OR_EQ:
+                    // gte(): "where fieldName >= fieldValues"
+                    queryBuilder = QueryBuilders.rangeQuery(fieldName).gte(fieldValues);
+                    break;
+                case LESS:
+                    // lt(): "where fieldName < fieldValues"
+                    queryBuilder = QueryBuilders.rangeQuery(fieldName).lt(fieldValues);
+                    break;
+                case LESS_OR_EQ:
+                    // lte(): "where fieldName <= fieldValues"
+                    queryBuilder = QueryBuilders.rangeQuery(fieldName).lte(fieldValues);
+                    break;
+                default:
+                    continue;
+            }
+            // "filter()" more efficient then "must()"
+            boolQueryBuilder.filter(queryBuilder);
+        }
+        return boolQueryBuilder;
+    }
+
+    private PageDetail<T> search(SearchRequest request) {
+        int total;
+        List<T> dataList;
+        try {
+            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+            total = (int) response.getHits().getTotalHits().value;
+            dataList = Arrays.stream(response.getHits().getHits()).map(p -> {
+                try {
+                    return objectMapper.readValue(p.getSourceAsString(), tClass);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new PageDetail<>(total, dataList);
+    }
+
+    @Override
     public T get(String index, Serializable id) {
         GetRequest request = new GetRequest();
         request.index(index);
@@ -65,50 +189,6 @@ public abstract class AbstractRepository<T> implements Repository<T> {
             throw new RuntimeException(e);
         }
         return t;
-    }
-
-    @Override
-    public List<T> list(String... index) {
-        SearchRequest request = new SearchRequest();
-        request.indices(index);
-        // 构造查询条件
-        SearchSourceBuilder builder = new SearchSourceBuilder();
-        builder.query(QueryBuilders.matchAllQuery());
-        builder.timeout(new TimeValue(5, TimeUnit.MINUTES));
-        builder.trackTotalHits(true);
-        request.source(builder);
-        List<T> list;
-        try {
-            SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-            list = Arrays.stream(response.getHits().getHits()).map(p -> {
-                try {
-                    return objectMapper.readValue(p.getSourceAsString(), tClass);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return list;
-    }
-
-    @Override
-    public List<T> queryByAlias(String alias) {
-        // 构建别名搜索请求
-        GetAliasesRequest aliasesRequest = new GetAliasesRequest(alias);
-        try {
-            // 使用别名查询实际的索引
-            GetAliasesResponse response = restHighLevelClient.indices()
-                    .getAlias(aliasesRequest, RequestOptions.DEFAULT);
-            Map<String, Set<AliasMetadata>> aliases = response.getAliases();
-            Set<String> indices = aliases.keySet();
-            String[] indexArray = indices.toArray(new String[0]);
-            // 执行查询
-            return list(indexArray);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

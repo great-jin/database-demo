@@ -2,20 +2,26 @@ package xyz.ibudai.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xyz.ibudai.model.Condition;
+import xyz.ibudai.model.QueryType;
 import xyz.ibudai.model.User;
 import xyz.ibudai.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("api/es/document")
+@RequestMapping("/api/es/document")
 public class UserController {
 
     @Autowired
     private UserRepository userService;
 
     @GetMapping("getById")
-    public User getById(@RequestParam("indexName") String indexName, @RequestParam("id") String id) {
+    public User getById(@RequestParam("indexName") String indexName,
+                        @RequestParam("id") String id) {
         return userService.get(indexName, id);
     }
 
@@ -24,14 +30,14 @@ public class UserController {
         return userService.list(indexName);
     }
 
-    @PostMapping("single")
-    public List<User> singleQuery(@RequestParam("indexName") String indexName, @RequestBody User user) {
-        return userService.singleQuery(indexName, user);
-    }
-
-    @PostMapping("multiple")
-    public List<User> multipleQuery(@RequestParam("indexName") String indexName, @RequestBody User user) {
-        return userService.multipleQuery(indexName, user);
+    @PostMapping("listByCondition")
+    public List<User> listByCondition(@RequestParam("indexName") String indexName,
+                                      @RequestBody User user) {
+        List<Condition> conditions = new ArrayList<>();
+        List<String> ids = Stream.of("1", "2", "3").collect(Collectors.toList());
+        conditions.add(new Condition(QueryType.IN, "id", ids));
+        conditions.add(new Condition(QueryType.EQUAL, "name", user.getName()));
+        return userService.listByCondition(indexName, conditions);
     }
 
     @PostMapping("add")

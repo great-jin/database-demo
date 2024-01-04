@@ -1,5 +1,8 @@
 package xyz.ibudai.repository;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * The interface Index service.
  */
@@ -21,6 +24,14 @@ public interface IndexRepository {
      * @return boolean
      */
     boolean isExist(String indexName);
+
+    /**
+     * Gets alias indices.
+     *
+     * @param alias the alias
+     * @return the alias indices
+     */
+    Set<String> getAliasIndices(String alias);
 
     /**
      * 创建索引

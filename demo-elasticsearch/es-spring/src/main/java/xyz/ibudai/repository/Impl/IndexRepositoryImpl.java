@@ -1,13 +1,16 @@
 package xyz.ibudai.repository.Impl;
 
 import org.elasticsearch.action.admin.indices.alias.Alias;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.cluster.metadata.AliasMetadata;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
@@ -18,6 +21,9 @@ import org.springframework.util.StringUtils;
 import xyz.ibudai.repository.IndexRepository;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service("indexService")
 public class IndexRepositoryImpl implements IndexRepository {
@@ -73,6 +79,21 @@ public class IndexRepositoryImpl implements IndexRepository {
             throw new RuntimeException(e);
         }
         return isExists;
+    }
+
+    @Override
+    public Set<String> getAliasIndices(String alias) {
+        Set<String> indices;
+        try {
+            GetAliasesRequest aliasesRequest = new GetAliasesRequest(alias);
+            GetAliasesResponse response = restHighLevelClient.indices()
+                    .getAlias(aliasesRequest, RequestOptions.DEFAULT);
+            Map<String, Set<AliasMetadata>> aliases = response.getAliases();
+            indices = aliases.keySet();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return indices;
     }
 
     @Override
