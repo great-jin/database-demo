@@ -20,6 +20,10 @@ public interface Repository<T> {
 
     String save(String index, Serializable id, T t);
 
+    Boolean bulkSave(String index, List<T> data);
+
+    Boolean batchSave(String index, Integer batchSize, List<T> data);
+
     String update(String index, Serializable id, T t);
 
     String delete(String index, Serializable id);

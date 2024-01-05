@@ -2,6 +2,8 @@ package xyz.ibudai.repository.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -21,6 +23,8 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import xyz.ibudai.model.Condition;
 import xyz.ibudai.model.PageDetail;
@@ -30,6 +34,7 @@ import xyz.ibudai.repository.Repository;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public abstract class AbstractRepository<T> implements Repository<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRepository.class);
 
     private final Class<T> tClass;
 
@@ -204,6 +211,68 @@ public abstract class AbstractRepository<T> implements Repository<T> {
             throw new RuntimeException(e);
         }
         return response.getResult().getLowercase();
+    }
+
+    @Override
+    public Boolean bulkSave(String index, List<T> data) {
+        if (Objects.isNull(data) || data.isEmpty()) {
+            throw new IllegalArgumentException("data is empty");
+        }
+
+        boolean success = true;
+        try {
+            BulkRequest bulkRequest = new BulkRequest();
+            for (T document : data) {
+                IndexRequest indexRequest = new IndexRequest(index)
+                        // 设置文档内容
+                        .source(objectMapper.writeValueAsString(document), XContentType.JSON);
+                bulkRequest.add(indexRequest);
+            }
+            BulkResponse response = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            if (response.hasFailures()) {
+                success = false;
+                LOGGER.error("Bulk request failed: {}", response.buildFailureMessage());
+            }
+        } catch (Exception e) {
+            success = false;
+            LOGGER.error("Bulk request error.", e);
+        }
+        return success;
+    }
+
+    @Override
+    public Boolean batchSave(String index, Integer batchSize, List<T> data) {
+        if (Objects.isNull(data) || data.isEmpty()) {
+            throw new IllegalArgumentException("data is empty");
+        }
+        if (Objects.isNull(batchSize) || batchSize <= 0) {
+            // Set default value
+            batchSize = 200;
+        }
+
+        boolean success = true;
+        try {
+            int start = 0;
+            int size = data.size();
+            int end = Math.min(size, batchSize);
+            while (start <= end) {
+                if (start == end) {
+                    break;
+                }
+                try {
+                    List<T> tempList = data.subList(start, end);
+                    success = bulkSave(index, tempList);
+                } catch (Exception e) {
+                    LOGGER.error("Save error.", e);
+                }
+                start = end;
+                end = size - end < batchSize ? size : end + batchSize;
+            }
+        } catch (Exception e) {
+            success = false;
+            LOGGER.error("Batch save error.", e);
+        }
+        return success;
     }
 
     @Override

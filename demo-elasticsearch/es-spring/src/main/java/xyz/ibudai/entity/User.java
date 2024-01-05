@@ -1,4 +1,4 @@
-package xyz.ibudai.model;
+package xyz.ibudai.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

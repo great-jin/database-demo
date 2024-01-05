@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.ibudai.model.Condition;
 import xyz.ibudai.model.QueryType;
-import xyz.ibudai.model.User;
+import xyz.ibudai.entity.User;
 import xyz.ibudai.repository.UserRepository;
 
 import java.util.ArrayList;

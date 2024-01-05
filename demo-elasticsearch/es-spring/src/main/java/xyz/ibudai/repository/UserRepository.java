@@ -1,6 +1,6 @@
 package xyz.ibudai.repository;
 
-import xyz.ibudai.model.User;
+import xyz.ibudai.entity.User;
 
 /**
  * The interface User repository.
