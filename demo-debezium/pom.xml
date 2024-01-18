@@ -21,6 +21,7 @@
     <modules>
         <module>debezium-common</module>
         <module>debezium-mysql</module>
+        <module>debezium-postgres</module>
         <module>debezium-jdbc</module>
         <!--        <module>postgres-cdc</module>-->
     </modules>

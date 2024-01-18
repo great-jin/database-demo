@@ -1,4 +1,4 @@
-package xyz.ibudai.common.handler;
+package xyz.ibudai.debezium.common.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
