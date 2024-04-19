@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.ibudai.database.sharding.sphere.dao.UserAccountDao">
+
+    <resultMap type="xyz.ibudai.database.sharding.sphere.entity.UserAccount" id="UserAccountMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询数据-->
+    <select id="joinList" resultMap="UserAccountMap">
+        select
+            a.*
+        from user_info i
+                 left join user_account a
+                           on i.id = a.user_id
+    </select>
+</mapper>
+

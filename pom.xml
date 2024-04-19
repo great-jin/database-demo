@@ -31,6 +31,7 @@
         <module>demo-maxcompute</module>
         <module>demo-tool</module>
         <module>demo-debezium</module>
+        <module>demo-sharding</module>
     </modules>
 
     <build>
