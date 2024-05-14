@@ -8,23 +8,70 @@
 项目中针对每一种数据库分别提供 ``Maven`` 与 ``Spring Boot`` 项目集成示例，助你快速上手。
 
 
+## Project module
+- [X] **MySQL**
+  - [X] Maven
+  - [X] Spring Boot
 
-## 支持的数据库
-### 1. 已支持
-- **MySQL**: Maven、Spring Boot
-- **Oracle**: Maven、Spring Boot
-- **Redis**: Maven、Spring Boot
-- **Kafka**: Maven、Spring Boot
-- **Zookeeper**: Spring Boot
-- **FTP**: Maven
-- **MinIO**: Maven、Spring Boot
-- **Hive**: Maven
-- **MaxCompute**: Maven
-- **Elasticsearch**: Spring Boot
+- [X] **Oracle**
+  - [X] Maven
+  - [X] Spring Boot
+
+- [X] **MaxCompute**
+  - [X] Maven
+  - [ ] Spring Boot
+
+- [ ] **MongoDB**
+  - [ ] Maven
+  - [ ] Spring Boot
+
+- [ ] **PostgreSQL**
+  - [ ] Maven
+  - [ ] Spring Boot
+
+- [X] **Redis**
+  - [X] Maven
+  - [X] Spring Boot
+
+- [ ] **RabbitMQ**:
+  - [ ] Maven
+  - [ ] Spring Boot
+
+- [X] **Kafka**:
+  - [X] Maven
+  - [X] Spring Boot
+
+- [X] **Zookeeper**
+  - [ ] Maven
+  - [X] Spring Boot
+
+- [X] **Elasticsearch**
+  - [X] Maven
+  - [X] Spring Boot
+
+- [X] **FTP**
+  - [X] Maven
+  - [ ] Spring Boot
+
+- [X] **MinIO**
+  - [X] Maven
+  - [X] Spring Boot
+
+- [X] **Hive**
+  - [X] Maven
+  - [ ] Spring Boot
+
+- [ ] **HBase**
+  - [ ] Maven
+  - [ ] Spring Boot
 
 
-### 2.待支持
-- **HBase**: 待补充。
-- **Mongo**: 待补充。
-- **Postgres**: 待补充。
-- **RabbitMQ**: 待补充。
+## Database Tool
+- [X] **Debezium CDC**
+  - [X] MySQL
+  - [X] Oracle
+  - [X] PostgreSQL
+
+- [X] **Sphere sharding**
+  - [X] MySQL
+
