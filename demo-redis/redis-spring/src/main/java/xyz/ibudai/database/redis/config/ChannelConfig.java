@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import xyz.ibudai.database.redis.listener.Channel1Listener;
 import xyz.ibudai.database.redis.listener.Channel2Listener;
-import xyz.ibudai.listener.Channel1Listener;
 
 @Configuration
 public class ChannelConfig {

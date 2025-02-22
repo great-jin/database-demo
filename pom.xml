@@ -17,6 +17,7 @@
         <module>a-template</module>
         <module>demo-cdc</module>
         <module>demo-jdbc</module>
+        <module>demo-sqlite</module>
         <module>demo-mongo</module>
         <module>demo-postgres</module>
         <module>demo-redis</module>
