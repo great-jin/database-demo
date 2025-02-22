@@ -17,6 +17,10 @@
   - [X] Maven
   - [X] Spring Boot
 
+- [X] **SQLite**
+  - [X] Maven
+  - [ ] Spring Boot
+
 - [X] **MaxCompute**
   - [X] Maven
   - [ ] Spring Boot
