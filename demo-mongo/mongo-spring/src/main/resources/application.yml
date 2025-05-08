@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:123456@192.168.0.21:27017/test_col?authSource=admin

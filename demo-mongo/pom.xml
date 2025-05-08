@@ -14,5 +14,6 @@
 
     <modules>
         <module>mongo-maven</module>
+        <module>mongo-spring</module>
     </modules>
 </project>
